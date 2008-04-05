@@ -1,0 +1,3 @@
+<?
+$update_page->replace('item_' . $item->id, $this->render_partial('todo/item'));
+$update_page->visual_effect('highlight', 'item_' . $item->id);

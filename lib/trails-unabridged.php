@@ -24,7 +24,7 @@
 /**
  * The version of the trails library.
  */
-define('TRAILS_VERSION', '0.5.1');
+define('TRAILS_VERSION', '0.5.2');
 
 
 /**
@@ -708,20 +708,26 @@ class Trails_Controller {
 
 
   /**
-   * <MethodDescription>
+   * Returns a URL to a specified route to your Trails application.
    *
-   * @param  string  <description>
+   * Example:
+   * Your Trails application is located at 'http://example.com/dispatch.php'.
+   * So your dispatcher's trails_uri is set to 'http://example.com/dispatch.php'
+   * If you want the URL to your 'wiki' controller with action 'index' you
+   * should send:
    *
-   * @return string  <description>
+   *   $url = $controller->url_for('wiki/index');
+   *
+   * $url should then contain 'http://example.com/dispatch.php/wiki/index'.
+   *
+   * NOTE: This method will likely get changed in the next release.
+   *
+   * @param  string  a string containing a route
+   *
+   * @return string  a URL to this route
    */
   function url_for($to) {
-
-    $base = $this->dispatcher->trails_uri;
-
-    # absolute URL?
-    return preg_match('#^[a-z]+://#', $to)
-           ? $to
-           : $base . '/' . $to;
+    return $this->dispatcher->trails_uri . '/' . $to;
   }
 
 

@@ -98,7 +98,7 @@ class RoutingTestCase extends UnitTestCase {
     $this->dispatcher = NULL;
   }
 
-  function todo_parse_is_protected_test_parse() {
+  function test_parse() {
 
     $paths = array(
       ''                    => NULL,
@@ -108,6 +108,7 @@ class RoutingTestCase extends UnitTestCase {
       'bar'                 => array('bar', ''),
       'bar/show'            => array('bar', 'show'),
       'bar/show/1/2'        => array('bar', 'show/1/2'),
+      'bar/show///1///2'     => array('bar', 'show///1///2'),
       'foo'                 => NULL,
       'foo/foobar'          => array('foo/foobar', ''),
       'foo/foobar/list'     => array('foo/foobar', 'list'),

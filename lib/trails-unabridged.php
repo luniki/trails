@@ -577,8 +577,10 @@ class Trails_Controller {
 
     $this->performed = TRUE;
 
-    # get uri
-    $url = $this->url_for($to);
+    # get uri; keep absolute URIs
+    $url = preg_match('#^[a-z]+://#', $to)
+           ? $to
+           : $this->url_for($to);
 
     # redirect
     $this->response

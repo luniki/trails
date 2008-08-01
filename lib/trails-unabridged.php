@@ -164,7 +164,7 @@ class Trails_Dispatcher {
 
       $body = sprintf('<html><head><title>Trails Error</title></head>'.
                       '<body><h1>%s</h1><pre>%s</pre></body></html>',
-                      htmlentities($e),
+                      htmlentities($e->__toString()),
                       htmlentities($e->getTraceAsString()));
 
       if ($e instanceof Trails_Exception) {
@@ -581,11 +581,10 @@ class Trails_Controller {
     $url = $this->url_for($to);
 
     # redirect
-    # TODO (mlunzena) quoting necessary??
     $this->response
       ->add_header('Location', $url)
       ->set_body(sprintf('<html><head><meta http-equiv="refresh" content="0;'.
-                         'url=%s"/></head></html>', $url));
+                         'url=%s"/></head></html>', htmlentities($url)));
   }
 
 
@@ -1078,7 +1077,10 @@ class Trails_Exception extends Exception {
    *
    * @return type       <description>
    */
-  function __construct($status, $reason, $headers = array()) {
+  function __construct($status, $reason = NULL, $headers = array()) {
+    if ($reason === NULL) {
+      $reason = Trails_Response::get_reason($status);
+    }
     parent::__construct($reason, $status);
     $this->headers = $headers;
   }

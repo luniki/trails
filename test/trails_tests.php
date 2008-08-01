@@ -58,7 +58,7 @@ class Trails_Tests {
 
 
       # load required files
-      require_once 'lib/trails.php';
+      require_once 'lib/trails-unabridged.php';
 
       $once = TRUE;
     }

@@ -497,7 +497,7 @@ class Trails_Controller {
    * @return arraye       an array with two elements - a string containing the
    *                      action and an array of strings representing the args
    */
-  protected function extract_action_and_args($string) {
+  function extract_action_and_args($string) {
 
     if ('' === $string) {
       return array('index', array());
@@ -516,7 +516,7 @@ class Trails_Controller {
    *
    * @return string  the mapped method name
    */
-  protected function map_action($action) {
+  function map_action($action) {
     return $action . '_action';
   }
 
@@ -533,7 +533,7 @@ class Trails_Controller {
    *
    * @return bool
    */
-  protected function before_filter(&$action, &$args) {
+  function before_filter(&$action, &$args) {
   }
 
 
@@ -545,7 +545,7 @@ class Trails_Controller {
    *
    * @return void
    */
-  protected function after_filter($action, $args) {
+  function after_filter($action, $args) {
   }
 
 
@@ -557,7 +557,7 @@ class Trails_Controller {
    *
    * @return void
    */
-  protected function does_not_understand($action, $args) {
+  function does_not_understand($action, $args) {
     throw new Trails_Exception(404, 'Action missing: ' . $action);
   }
 
@@ -569,7 +569,7 @@ class Trails_Controller {
    *
    * @return void
    */
-  protected function redirect($to) {
+  function redirect($to) {
 
     if ($this->performed) {
       throw new Trails_Exception(500, 'Double Render Error');
@@ -597,7 +597,7 @@ class Trails_Controller {
    *
    * @return void
    */
-  protected function render_text($text = ' ') {
+  function render_text($text = ' ') {
 
     if ($this->performed) {
       throw new Trails_Exception(500, 'Double Render Error');
@@ -614,7 +614,7 @@ class Trails_Controller {
    *
    * @return void
    */
-  protected function render_nothing() {
+  function render_nothing() {
     $this->render_text('');
   }
 
@@ -626,7 +626,7 @@ class Trails_Controller {
    *
    * @return void
    */
-  protected function render_action($action) {
+  function render_action($action) {
     $class = get_class($this);
     $controller_name =
       Trails_Inflector::underscore(substr($class, 0, strlen($class) - 10));
@@ -643,7 +643,7 @@ class Trails_Controller {
    *
    * @return void
    */
-  protected function render_template($template_name, $layout = NULL) {
+  function render_template($template_name, $layout = NULL) {
 
     # open template
     $factory =
@@ -679,7 +679,7 @@ class Trails_Controller {
    *
    * @return array  an associative array of variables for the template
    */
-  protected function get_assigned_variables() {
+  function get_assigned_variables() {
 
     $assigns = array();
     $protected = get_class_vars(get_class($this));
@@ -703,7 +703,7 @@ class Trails_Controller {
    *
    * @return void
    */
-  protected function set_layout($layout) {
+  function set_layout($layout) {
     $this->layout = $layout;
   }
 
@@ -751,7 +751,7 @@ class Trails_Controller {
    *
    * @return void
    */
-  protected function set_content_type($type) {
+  function set_content_type($type) {
     $this->response->add_header('Content-Type', $type);
   }
 }

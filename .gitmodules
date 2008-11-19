@@ -1,0 +1,3 @@
+[submodule "examples/vendor/flexi"]
+	path = examples/vendor/flexi
+	url = git://github.com/luniki/flexi-templates.git

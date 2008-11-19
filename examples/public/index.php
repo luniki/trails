@@ -37,7 +37,7 @@ $trails_uri = sprintf('http%s://%s%s%s',
 require_once $trails_root . '/../vendor/trails/trails.php';
 
 # load flexi
-require_once $trails_root . '/../vendor/flexi/flexi.php';
+require_once $trails_root . '/../vendor/flexi/lib/flexi.php';
 
 # dispatch
 $request_uri = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';

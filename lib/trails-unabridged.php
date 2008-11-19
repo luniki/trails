@@ -145,6 +145,11 @@ class Trails_Dispatcher {
     try {
 
       if ('' === $uri) {
+        if (!$this->file_exists($this->default_controller . '.php')) {
+          throw new Trails_Exception(404,
+            sprintf('Default controller "%s" not found',
+                    $this->default_controller));
+        }
         $controller_path = $this->default_controller;
         $unconsumed = $uri;
       }

@@ -34,7 +34,7 @@ $trails_uri = sprintf('http%s://%s%s%s',
                       $_SERVER['SCRIPT_NAME']);
 
 # load trails
-require_once $trails_root . '/../vendor/trails/trails.php';
+require_once $trails_root . '/../vendor/trails/trails-unabridged.php';
 
 # load flexi
 require_once $trails_root . '/../vendor/flexi/lib/flexi.php';

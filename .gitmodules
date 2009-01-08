@@ -1,3 +1,6 @@
 [submodule "examples/vendor/flexi"]
 	path = examples/vendor/flexi
 	url = git://github.com/luniki/flexi-templates.git
+[submodule "website"]
+	path = website
+	url = git@github.com:luniki/trails.git

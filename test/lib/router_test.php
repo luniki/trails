@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 require_once dirname(__FILE__) . '/../trails_tests.php';
-require_once dirname(__FILE__) . '/../../examples/vendor/flexi/flexi.php';
+require_once dirname(__FILE__) . '/../../examples/vendor/flexi/lib/flexi.php';
 Trails_Tests::setup();
 
 Mock::generatePartial('Trails_Dispatcher', 'MockDispatcher',

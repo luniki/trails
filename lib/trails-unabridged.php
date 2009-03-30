@@ -168,7 +168,7 @@ class Trails_Dispatcher {
 
     } catch (Exception $e) {
 
-      $response = isset($controller) ? $controller->rescue_action($e)
+      $response = isset($controller) ? $controller->rescue($e)
                                      : $this->trails_error($e);
     }
 
@@ -774,19 +774,25 @@ class Trails_Controller {
 
 
   /**
-   * TODO
+   * Exception handler called when the performance of an action raises an
+   * exception.
    *
-   * @param  type       <description>
+   * @param  object     the thrown exception
    *
-   * @return type       <description>
+   * @return object     a response object
    */
-  function rescue_action($exception) {
+  function rescue($exception) {
 
     # log results
 
+    # erase former response
     if ($this->performed) {
-      # erase results
+      $this->performed = FALSE;
+      $this->response = new Trails_Response();
     }
+
+    var_dump($exception);
+
 
 #    if consider_all_requests_local || local_request?
 #      rescue_action_locally(exception)
@@ -794,6 +800,7 @@ class Trails_Controller {
 #      rescue_action_in_public(exception)
 #    end
 
+    return $this->response;
   }
 }
 

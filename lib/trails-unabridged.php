@@ -146,9 +146,8 @@ class Trails_Dispatcher {
 
       if ('' === $uri) {
         if (!$this->file_exists($this->default_controller . '.php')) {
-          throw new Trails_Exception(404,
-            sprintf('Default controller "%s" not found',
-                    $this->default_controller));
+          throw new Trails_MissingFile(
+            "Default controller '{$this->default_controller}' not found'");
         }
         $controller_path = $this->default_controller;
         $unconsumed = $uri;
@@ -163,22 +162,36 @@ class Trails_Dispatcher {
       $controller = new $class($this);
       $response = $controller->perform($unconsumed);
 
+    } catch (Trails_Exception $te) {
+
+      $response = $this->trails_error($te);
+
     } catch (Exception $e) {
 
-      ob_clean();
+      $response = isset($controller) ? $controller->rescue_action($e)
+                                     : $this->trails_error($e);
+    }
 
-      $body = sprintf('<html><head><title>Trails Error</title></head>'.
-                      '<body><h1>%s</h1><pre>%s</pre></body></html>',
-                      htmlentities($e->__toString()),
-                      htmlentities($e->getTraceAsString()));
+    return $response;
+  }
 
-      if ($e instanceof Trails_Exception) {
-        $response = new Trails_Response($body, $e->headers, $e->getCode(),
-                                        $e->getMessage());
-      }
-      else {
-        $response = new Trails_Response($body, array(), 500, $e->getMessage());
-      }
+  function trails_error($exception) {
+    ob_clean();
+
+    $body = sprintf('<html><head><title>Trails Error</title></head>'.
+                    '<body><h1>%s</h1><pre>%s</pre></body></html>',
+                    htmlentities($exception->__toString()),
+                    htmlentities($exception->getTraceAsString()));
+
+    if ($exception instanceof Trails_Exception) {
+      $response = new Trails_Response($body,
+                                      $exception->headers,
+                                      $exception->getCode(),
+                                      $exception->getMessage());
+    }
+    else {
+      $response = new Trails_Response($body, array(), 500,
+                                      $exception->getMessage());
     }
 
     return $response;
@@ -213,7 +226,7 @@ class Trails_Dispatcher {
     list($head, $tail) = $this->split_on_first_slash($unconsumed);
 
     if (!preg_match('/^\w+$/', $head)) {
-      throw new Trails_Exception(400);
+      throw new Trails_RoutingError("No route matches '$head'");
     }
 
     $controller = (isset($controller) ? $controller . '/' : '') . $head;
@@ -225,7 +238,7 @@ class Trails_Dispatcher {
       return $this->parse($tail, $controller);
     }
 
-    throw new Trails_Exception(404);
+    throw new Trails_RoutingError("No route matches '$head'");
   }
 
   function split_on_first_slash($str) {
@@ -253,7 +266,7 @@ class Trails_Dispatcher {
     require_once "{$this->trails_root}/controllers/{$controller}.php";
     $class = Trails_Inflector::camelize($controller) . 'Controller';
     if (!class_exists($class)) {
-      throw new Trails_Exception(501, 'Controller missing: ' . $class);
+      throw new Trails_UnknownController("Controller missing: '$class'");
     }
     return $class;
   }
@@ -563,7 +576,7 @@ class Trails_Controller {
    * @return void
    */
   function does_not_understand($action, $args) {
-    throw new Trails_Exception(404, 'Action missing: ' . $action);
+    throw new Trails_UnknownAction("No action responded to '$action'.");
   }
 
 
@@ -577,7 +590,7 @@ class Trails_Controller {
   function redirect($to) {
 
     if ($this->performed) {
-      throw new Trails_Exception(500, 'Double Render Error');
+      throw new Trails_DoubleRenderError();
     }
 
     $this->performed = TRUE;
@@ -605,7 +618,7 @@ class Trails_Controller {
   function render_text($text = ' ') {
 
     if ($this->performed) {
-      throw new Trails_Exception(500, 'Double Render Error');
+      throw new Trails_DoubleRenderError();
     }
 
     $this->performed = TRUE;
@@ -656,8 +669,7 @@ class Trails_Controller {
 
     $template = $factory->open($template_name);
     if (is_null($template)) {
-      throw new Trails_Exception(500, sprintf('No such template: "%s"',
-                                              $template_name));
+      throw new Trails_MissingFile("No such template: '$template_name'");
     }
 
     # template requires setup ?
@@ -758,6 +770,30 @@ class Trails_Controller {
    */
   function set_content_type($type) {
     $this->response->add_header('Content-Type', $type);
+  }
+
+
+  /**
+   * TODO
+   *
+   * @param  type       <description>
+   *
+   * @return type       <description>
+   */
+  function rescue_action($exception) {
+
+    # log results
+
+    if ($this->performed) {
+      # erase results
+    }
+
+#    if consider_all_requests_local || local_request?
+#      rescue_action_locally(exception)
+#    else
+#      rescue_action_in_public(exception)
+#    end
+
   }
 }
 
@@ -1084,7 +1120,7 @@ class Trails_Exception extends Exception {
    *
    * @return type       <description>
    */
-  function __construct($status, $reason = NULL, $headers = array()) {
+  function __construct($status = 500, $reason = NULL, $headers = array()) {
     if ($reason === NULL) {
       $reason = Trails_Response::get_reason($status);
     }
@@ -1129,3 +1165,40 @@ class Trails_Exception extends Exception {
   }
 }
 
+class Trails_DoubleRenderError extends Trails_Exception {
+
+  function __construct() {
+    $message =
+      "Render and/or redirect were called multiple times in this action. ".
+      "Please note that you may only call render OR redirect, and at most ".
+      "once per action.";
+    parent::__construct(500, $message);
+  }
+}
+
+class Trails_MissingFile extends Trails_Exception {
+  function __construct($message) {
+    parent::__construct(500, $message);
+  }
+}
+
+class Trails_RoutingError extends Trails_Exception {
+
+  function __construct($message) {
+    parent::__construct(400, $message);
+  }
+}
+
+class Trails_UnknownAction extends Trails_Exception {
+
+  function __construct($message) {
+    parent::__construct(404, $message);
+  }
+}
+
+class Trails_UnknownController extends Trails_Exception {
+
+  function __construct($message) {
+    parent::__construct(404, $message);
+  }
+}

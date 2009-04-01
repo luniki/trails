@@ -6,8 +6,11 @@ if (!defined('T_DOC_COMMENT'))
 if (!defined('T_ML_COMMENT'))
   define ('T_ML_COMMENT', -1);
 
+
+$file = $_SERVER['argv'][1];
+
 // read input file
-$input = file_get_contents(dirname(__FILE__).'/../lib/trails-unabridged.php');
+$input = file_get_contents($file);
 
 $space = $output = '';
 $set = '!"#$&\'()*+,-./:;<=>?@[\]^`{|}';
@@ -33,4 +36,5 @@ foreach (token_get_all($input) as $token)  {
   }
 }
 
-file_put_contents(dirname(__FILE__).'/../lib/trails.php', $output);
+echo $output;
+

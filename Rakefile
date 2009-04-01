@@ -13,5 +13,6 @@ task 'test' do
 end
 
 task 'shrink' do
-  sh "php tools/shrink.php"
+  sh "php lib/src/trails.php > lib/trails-unabridged.php"
+  sh "php tools/shrink.php lib/trails-unabridged.php > lib/trails.php"
 end

@@ -35,88 +35,89 @@ Trails_Tests::setup();
  * @version   $Id: flash_test.php 6258 2007-10-02 11:18:05Z mlunzena $
  */
 
-class FlashTestCase extends UnitTestCase {
+class FlashWithoutSessionTestCase extends UnitTestCase {
 
-  var $flash;
+  function test_should_return_a_proxy_without_a_session() {
+    $flash = Trails_Flash::instance();
+    $this->assertTrue($flash instanceof Trails_FlashProxy);
+  }
 
-  function setUp() {
-    Trails_Flash::fire();
-    $this->flash =& Trails_Flash::flash();
+  function test_should_throw_an_error_accessing_the_proxy_without_a_session() {
+    $this->expectException('Trails_SessionRequiredException');
+    $flash = Trails_Flash::instance();
+    $flash['key'] = 'provoke an exception';
+  }
+
+  function test_should_not_throw_an_error_accessing_the_proxy_with_a_session() {
+    $_SESSION = array();
+    $flash = Trails_Flash::instance();
+    $flash['key'] = 'do not provoke an exception';
+    unset($_SESSION);
+  }
+}
+
+class FlashWithSessionTestCase extends UnitTestCase {
+
+  function setup() {
+    $_SESSION = array();
+    $this->flash = Trails_Flash::instance();
   }
 
   function tearDown() {
-    Trails_Flash::flash(null);
-    # TODO (mlunzena) a test should not know about this
-    unset($_SESSION['trails_flash'], $this->flash);
+    unset($_SESSION, $this->flash);
   }
 
   function simulateRedirect() {
-    Trails_Flash::sweep();
-    Trails_Flash::flash(NULL);
-    Trails_Flash::fire();
+    $this->flash->__sleep();
+    $this->flash->__wakeUp();
+    $this->flash = Trails_Flash::instance();
   }
 
-  function test_fire() {
-    # remove set up flash
-    Trails_Flash::flash(null);
-    # TODO (mlunzena) a test should not know about this
-    unset($_SESSION['trails_flash']);
-
-    $this->assertNull($this->flash);
-    Trails_Flash::fire();
-    $this->assertNotNull($this->flash);
+  function test_should_be_a_singleton() {
+    $flash1 = Trails_Flash::instance();
+    $flash2 = Trails_Flash::instance();
+    $this->assertReference($flash1, $flash2);
   }
 
-  function test_get_set() {
-    $this->flash->set('a', 42);
-    $this->assertEqual(42, $this->flash->get('a'));
+  function test_should_not_throw_exception_when_accessing_with_a_session() {
+    $this->flash['key'] = 'value';
   }
 
-  function test_get_set_ref() {
-    $a =& new stdClass();
+  function test_should_return_previously_set_values() {
+    $a_value = 'value';
+    $this->flash['key'] = $a_value;
+    $this->assertEqual($a_value, $this->flash['key']);
+  }
+
+  function test_should_return_previously_set_values_as_references() {
+    $a_value = new stdClass();
+    $this->flash['key'] = $a_value;
+    $this->assertReference($a_value, $this->flash['key']);
+  }
+
+  function test_should_return_previously_set_values_after_one_redirect() {
+    $a_value = 'value';
+    $this->flash['key'] = $a_value;
+    $this->simulateRedirect();
+    $this->assertEqual($a_value, $this->flash['key']);
+  }
+
+  function test_should_return_NULL_after_more_than_one_redirect() {
+    $a_value = 'value';
+    $this->flash['key'] = $a_value;
+    $this->simulateRedirect();
+    $this->simulateRedirect();
+    $this->assertEqual(NULL, $this->flash['key']);
+  }
+
+  function test_should_return_reference_after_set_ref() {
+    $a = new stdClass();
     $this->flash->set_ref('a', $a);
-    $got =& $this->flash->get('a');
+    $got = $this->flash->get('a');
     $this->assertReference($got, $a);
   }
 
-  function test_redirect() {
-
-    # set a
-    $this->flash->set('a', 42);
-    $this->assertEqual(42, $this->flash->get('a'));
-
-    # simulate redirect
-    $this->simulateRedirect();
-
-    # a should be here
-    $this->assertEqual(42, $this->flash->get('a'));
-  }
-
-  function test_double_redirect() {
-
-    # first redirect
-    $this->test_redirect();
-
-    # simulate another redirect
-    $this->simulateRedirect();
-
-    # a should be deleted
-    $this->assertNull($this->flash->get('a'));
-  }
-
-  function test_now() {
-    # set a
-    $this->flash->now('a', 42);
-    $this->assertEqual(42, $this->flash->get('a'));
-
-    # simulate redirect
-    $this->simulateRedirect();
-
-    # a should be deleted
-    $this->assertNull($this->flash->get('a'));
-  }
-
-  function test_discard_one() {
+  function test_should_discard_one() {
     # set a and b
     $this->flash->set('a', 42);
     $this->flash->set('b', 23);
@@ -134,7 +135,7 @@ class FlashTestCase extends UnitTestCase {
     $this->assertEqual(23, $this->flash->get('b'));
   }
 
-  function test_discard_all() {
+  function test_should_discard_all() {
     # set a and b
     $this->flash->set('a', 42);
     $this->flash->set('b', 23);
@@ -152,7 +153,7 @@ class FlashTestCase extends UnitTestCase {
     $this->assertNull($this->flash->get('b'));
   }
 
-  function test_keep_one() {
+  function test_should_keep_one() {
     # set a and b
     $this->flash->set('a', 42);
     $this->flash->set('b', 23);
@@ -175,7 +176,7 @@ class FlashTestCase extends UnitTestCase {
     $this->assertEqual(23, $this->flash->get('b'));
   }
 
-  function test_keep_all() {
+  function test_should_keep_all() {
     # set a and b
     $this->flash->set('a', 42);
     $this->flash->set('b', 23);
@@ -193,8 +194,9 @@ class FlashTestCase extends UnitTestCase {
     # simulate 2nd redirect
     $this->simulateRedirect();
 
-    # a should be deleted, but not b
+    # neither a nor b should be deleted
     $this->assertEqual(42, $this->flash->get('a'));
     $this->assertEqual(23, $this->flash->get('b'));
   }
 }
+

@@ -1,6 +1,6 @@
 <?php
 
-# Copyright (c)  2007 - Marcus Lunzenauer <mlunzena@uos.de>
+# Copyright (c)  2009 - Marcus Lunzenauer <mlunzena@uos.de>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,52 +21,33 @@
 # SOFTWARE.
 
 
-require_once 'simpletest/unit_tester.php';
-require_once 'simpletest/mock_objects.php';
-require_once 'varstream.php';
 
 /**
- * Setting up tests for trails.
+ * <ClassDescription>
  *
- * @package     trails
- * @subpackage  test
+ * @package    <package>
  *
  * @author    mlunzena
  * @copyright (c) Authors
  * @version   $Id$
  */
 
-class Trails_Tests {
+class FlashController extends Trails_Controller {
 
-  /**
-   * Calling this function initializes everything necessary to test trails.
-   *
-   * @return void
-   */
-  function setup() {
-    static $once;
+  function before_filter() {
+    session_start();
+    $this->flash = Trails_Flash::instance();
+  }
 
-    if (!$once) {
+  function after_filter() {
+  }
 
-      # define TRAILS_ROOT
-      define('TRAILS_ROOT', dirname(__FILE__) . '/trails_root/app');
+  function index_action() {
+    $this->flash["notice"] = "redirected from " . __METHOD__;
+    $this->redirect('flash/redirected');
+  }
 
-      # set include path
-      $include_path = ini_get('include_path');
-      $include_path .= PATH_SEPARATOR . dirname(__FILE__) . '/..';
-      $include_path .= PATH_SEPARATOR . TRAILS_ROOT;
-      ini_set('include_path', $include_path);
-
-
-      # load required files
-      require_once 'lib/src/dispatcher.php';
-      require_once 'lib/src/response.php';
-      require_once 'lib/src/controller.php';
-      require_once 'lib/src/inflector.php';
-      require_once 'lib/src/flash.php';
-      require_once 'lib/src/exception.php';
-
-      $once = TRUE;
-    }
+  function redirected_action() {
+    $this->render_text($this->flash["notice"]);
   }
 }

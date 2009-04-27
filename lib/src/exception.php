@@ -115,3 +115,11 @@ class Trails_UnknownController extends Trails_Exception {
     parent::__construct(404, $message);
   }
 }
+
+
+class Trails_SessionRequiredException extends Trails_Exception {
+  function __construct() {
+    $message = "Tried to access a non existing session.";
+    parent::__construct(500, $message);
+  }
+}

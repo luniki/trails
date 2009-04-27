@@ -16,42 +16,62 @@
  * @version   $Id: trails.php 7001 2008-04-04 11:20:27Z mlunzena $
  */
 
-class Trails_Flash {
+class Trails_Flash implements ArrayAccess {
 
+
+  /**
+   * <FieldDescription>
+   *
+   * @var Trails_FlashProxy
+   */
+  static $proxy;
 
   /**
    * @ignore
    */
-  private
-    $flash, $used;
+  public
+    $flash = array(), $used = array();
 
 
   /**
-   * Constructor
+   * <MethodDescription>
    *
-   * @return void
+   * @return type       <description>
    */
-  private function __construct($flash = array(), $used = array()) {
-    $this->flash = $flash;
-    $this->used  = $used;
+  static function instance() {
+
+    if (!isset($_SESSION)) {
+      if (is_null(self::$proxy)) {
+        self::$proxy = new Trails_FlashProxy();
+      }
+      return self::$proxy;
+    }
+
+
+    if (!isset($_SESSION['trails_flash'])) {
+      $_SESSION['trails_flash'] = new Trails_Flash();
+    }
+    return $_SESSION['trails_flash'];
   }
 
 
-  /**
-   * Class field replacement.
-   *
-   * @param object  the flash to set.
-   *
-   * @return object the stored flash.
-   */
-  static function &flash($set = FALSE) {
-    static $flash;
+  function offsetExists($offset) {
+    return isset($this->flash[$offset]);
+  }
 
-    if ($set !== FALSE) {
-      $flash = $set;
-    }
 
-    return $flash;
+  function offsetGet($offset) {
+    return $this->get($offset);
+  }
+
+
+  function offsetSet($offset, $value) {
+    $this->set($offset, $value);
+  }
+
+
+  function offsetUnset($offset) {
+    unset($this->flash[$offset], $this->used[$offset]);
   }
 
 
@@ -69,7 +89,7 @@ class Trails_Flash {
    *
    * @return void
    */
-  private function _use($k = NULL, $v = TRUE) {
+  function _use($k = NULL, $v = TRUE) {
     if ($k) {
       $this->used[$k] = $v;
     }
@@ -98,25 +118,6 @@ class Trails_Flash {
    */
   function discard($k = NULL) {
     $this->_use($k);
-  }
-
-
-  /**
-   * Marks flash entries as used and expose the flash to the view.
-   *
-   * @return void
-   */
-  static function fire() {
-    if (!isset($_SESSION['trails_flash'])) {
-      $flash =& Trails_Flash::flash(new Trails_Flash());
-      $_SESSION['trails_flash'] = array($flash->flash, $flash->used);
-    }
-    else {
-      list($_flash, $_used) = $_SESSION['trails_flash'];
-      $flash =& Trails_Flash::flash(new Trails_Flash($_flash, $_used));
-    }
-
-    $flash->discard();
   }
 
 
@@ -154,32 +155,6 @@ class Trails_Flash {
 
 
   /**
-   * Sets a flash that will not be available to the next action, only to the
-   * current.
-   *
-   *    $flash->now('message') = "Hello current action";
-   *
-   * This method enables you to use the flash as a central messaging system in
-   * your app. When you need to pass an object to the next action, you use the
-   * standard flash assign (<tt>set</tt>). When you need to pass an object to
-   * the current action, you use <tt>now</tt>, and your object will vanish when
-   * the current action is done.
-   *
-   * Entries set via <tt>now</tt> are accessed the same way as standard entries:
-   * <tt>$flash->get('my-key')</tt>.
-   *
-   * @param mixed  a key.
-   * @param mixed  its value.
-   *
-   * @return void
-   */
-  function now($k, $v) {
-    $this->discard($k);
-    $this->flash[$k] = $v;
-  }
-
-
-  /**
    * Sets a key's value.
    *
    * @param mixed  a key.
@@ -207,40 +182,119 @@ class Trails_Flash {
   }
 
 
+
   /**
-   * Deletes the flash entries that were not marked for keeping.
+   * <MethodDescription>
    *
-   * @return void
+   * @return type       <description>
    */
-  function sweep(){
+  function sweep() {
 
-    # no flash, no sweep
-    if (!isset($_SESSION['trails_flash'])) {
-      return;
-    }
-
-    # get flash
-    $flash =& Trails_Flash::flash();
-
-    // actually sweep
-    $keys = array_keys($flash->flash);
-    foreach ($keys as $k) {
-      if (!$flash->used[$k]) {
-        $flash->_use($k);
+    # remove used values
+    foreach (array_keys($this->flash) as $k) {
+      if ($this->used[$k]) {
+        unset($this->flash[$k], $this->used[$k]);
       } else {
-        unset($flash->flash[$k], $flash->used[$k]);
+        $this->_use($k);
       }
     }
 
-    // cleanup if someone meddled with flash or used
-    $fkeys = array_keys($flash->flash);
-    $ukeys = array_keys($flash->used);
+    # cleanup if someone meddled with flash or used
+    $fkeys = array_keys($this->flash);
+    $ukeys = array_keys($this->used);
     foreach (array_diff($fkeys, $ukeys) as $k => $v) {
-      unset($flash->used[$k]);
+      unset($this->used[$k]);
     }
+  }
 
-    // serialize it
-    $_SESSION['trails_flash'] = array($flash->flash, $flash->used);
+
+  /**
+   * <MethodDescription>
+   *
+   * @return type       <description>
+   */
+  function __toString() {
+    $values = array();
+    foreach ($this->flash as $k => $v) {
+      $values[] = "[$k: " . var_export($v, TRUE) .
+                  "(" . ($this->used[$k] ? "used" : "unused" ) . ")]";
+    }
+    return "[Flash " . join(",", $values) . "]\n";
+  }
+
+
+  /**
+   * <MethodDescription>
+   *
+   * @param  type       <description>
+   *
+   * @return type       <description>
+   */
+  function __sleep() {
+    $this->sweep();
+    return array('flash', 'used');
+  }
+
+
+  /**
+   * <MethodDescription>
+   *
+   * @param  type       <description>
+   *
+   * @return type       <description>
+   */
+  function __wakeUp() {
+    $this->discard();
+  }
+}
+
+
+/**
+ * <ClassDescription>
+ *
+ * @package     <package>
+ * @subpackage  <package>
+ *
+ * @author    mlunzena
+ * @copyright (c) Authors
+ * @version   $Id$
+ */
+
+class Trails_FlashProxy implements ArrayAccess {
+
+
+  function delegate() {
+    if (!isset($_SESSION)) {
+      throw new Trails_SessionRequiredException();
+    }
+    return Trails_Flash::instance();
+  }
+
+  function offsetExists($offset) {
+    $arguments = func_get_args();
+    return $this->__call(__FUNCTION__, $arguments);
+  }
+
+
+  function offsetGet($offset) {
+    $arguments = func_get_args();
+    return $this->__call(__FUNCTION__, $arguments);
+  }
+
+
+  function offsetSet($offset, $value) {
+    $arguments = func_get_args();
+    return $this->__call(__FUNCTION__, $arguments);
+  }
+
+
+  function offsetUnset($offset) {
+    $arguments = func_get_args();
+    return $this->__call(__FUNCTION__, $arguments);
+  }
+
+  function __call($name, $arguments) {
+    return call_user_func_array(array($this->delegate(), $name), $arguments);
   }
 }
 

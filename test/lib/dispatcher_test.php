@@ -66,25 +66,6 @@ class InflectorTestCase extends UnitTestCase {
   }
 }
 
-class DispatcherTestCase extends UnitTestCase {
-
-  function setUp() {
-  }
-
-  function tearDown() {
-  }
-
-  function test_dispatcher_is_instantiable() {
-    $dispatcher = new Trails_Dispatcher(TRAILS_ROOT, '', 'default', 'index');
-    $this->assertNotNull($dispatcher);
-    $this->assertIsA($dispatcher, 'Trails_Dispatcher');
-  }
-
-  function test_dispatcher_is_not_testable() {
-    var_dump(__METHOD__);
-  }
-}
-
 
 class RoutingTestCase extends UnitTestCase {
 

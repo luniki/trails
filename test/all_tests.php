@@ -31,12 +31,8 @@ require_once 'simpletest/collector.php';
 
 
 # collect all tests
-$all =& new GroupTest('All tests');
-
-$lib =& new GroupTest('lib tests');
-$lib->collect(dirname(__FILE__).'/lib', new SimplePatternCollector('/test.php$/'));
-$all->addTestCase($lib);
-
+$all = new TestSuite('All tests');
+$all->collect(dirname(__FILE__).'/lib', new SimplePatternCollector('/test.php$/'));
 
 # use text reporter if cli
 if (sizeof($_SERVER['argv']))

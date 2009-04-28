@@ -36,11 +36,9 @@ Trails_Tests::setup();
  * @version   $Id: controller_test.php 7001 2008-04-04 11:20:27Z mlunzena $
  */
 
-Mock::generate('Trails_Dispatcher');
-
 Mock::generatePartial(
         'Trails_Dispatcher',
-        'MockDispatcher',
+        'PartialMockDispatcher',
         array('load_controller', 'trails_error'));
 
 Mock::generatePartial('Trails_Controller', 'FooController',
@@ -50,7 +48,7 @@ Mock::generatePartial('Trails_Controller', 'FooController',
 class ControllerTestCase extends UnitTestCase {
 
   function setUp() {
-    $this->dispatcher = new MockDispatcher();
+    $this->dispatcher = new PartialMockDispatcher();
   }
 
   function tearDown() {
@@ -68,7 +66,7 @@ class DispatcherTestCase extends UnitTestCase {
 
   function setUp() {
     $this->setUpFS();
-    $this->dispatcher = new MockDispatcher();
+    $this->dispatcher = new PartialMockDispatcher();
     $this->dispatcher->__construct("var://app/", "http://trai.ls", "default");
   }
 

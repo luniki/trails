@@ -175,10 +175,15 @@ class Trails_Dispatcher {
   function trails_error($exception) {
     ob_clean();
 
+    # show details for local requests
+    $detailed = $_SERVER['REMOTE_ADDR'] === '127.0.0.1';
+
     $body = sprintf('<html><head><title>Trails Error</title></head>'.
                     '<body><h1>%s</h1><pre>%s</pre></body></html>',
                     htmlentities($exception->__toString()),
-                    htmlentities($exception->getTraceAsString()));
+                    $detailed
+                      ? htmlentities($exception->getTraceAsString())
+                      : '');
 
     if ($exception instanceof Trails_Exception) {
       $response = new Trails_Response($body,
@@ -486,6 +491,9 @@ class Trails_Controller {
 
     list($action, $args) = $this->extract_action_and_args($unconsumed);
 
+    # initialize flash
+    $this->flash = Trails_Flash::instance();
+
     # call before filter
     $before_filter_result = $this->before_filter($action, $args);
 
@@ -520,7 +528,7 @@ class Trails_Controller {
    *
    * @param  string       the processed string
    *
-   * @return arraye       an array with two elements - a string containing the
+   * @return array        an array with two elements - a string containing the
    *                      action and an array of strings representing the args
    */
   function extract_action_and_args($string) {
@@ -791,21 +799,12 @@ class Trails_Controller {
    */
   function rescue($exception) {
 
-    # log results
-
     # erase former response
     if ($this->performed) {
       $this->erase_response();
     }
 
-    var_dump($exception);
-
-
-#    if consider_all_requests_local || local_request?
-#      rescue_action_locally(exception)
-#    else
-#      rescue_action_in_public(exception)
-#    end
+    $this->response = $this->dispatcher->trails_error($exception);
 
     return $this->response;
   }
@@ -881,6 +880,11 @@ class Trails_Inflector {
 class Trails_Flash implements ArrayAccess {
 
 
+  /**
+   * <FieldDescription>
+   *
+   * @var Trails_FlashProxy
+   */
   static $proxy;
 
   /**
@@ -898,7 +902,10 @@ class Trails_Flash implements ArrayAccess {
   static function instance() {
 
     if (!isset($_SESSION)) {
-      throw new Trails_SessionRequiredException("");
+      if (is_null(self::$proxy)) {
+        self::$proxy = new Trails_FlashProxy();
+      }
+      return self::$proxy;
     }
 
 
@@ -1103,6 +1110,56 @@ class Trails_Flash implements ArrayAccess {
 }
 
 
+/**
+ * <ClassDescription>
+ *
+ * @package     <package>
+ * @subpackage  <package>
+ *
+ * @author    mlunzena
+ * @copyright (c) Authors
+ * @version   $Id$
+ */
+
+class Trails_FlashProxy implements ArrayAccess {
+
+
+  function delegate() {
+    if (!isset($_SESSION)) {
+      throw new Trails_SessionRequiredException();
+    }
+    return Trails_Flash::instance();
+  }
+
+  function offsetExists($offset) {
+    $arguments = func_get_args();
+    return $this->__call(__FUNCTION__, $arguments);
+  }
+
+
+  function offsetGet($offset) {
+    $arguments = func_get_args();
+    return $this->__call(__FUNCTION__, $arguments);
+  }
+
+
+  function offsetSet($offset, $value) {
+    $arguments = func_get_args();
+    return $this->__call(__FUNCTION__, $arguments);
+  }
+
+
+  function offsetUnset($offset) {
+    $arguments = func_get_args();
+    return $this->__call(__FUNCTION__, $arguments);
+  }
+
+  function __call($name, $arguments) {
+    return call_user_func_array(array($this->delegate(), $name), $arguments);
+  }
+}
+
+
 
 /**
  * TODO
@@ -1222,7 +1279,8 @@ class Trails_UnknownController extends Trails_Exception {
 
 
 class Trails_SessionRequiredException extends Trails_Exception {
-  function __construct($message) {
+  function __construct() {
+    $message = "Tried to access a non existing session.";
     parent::__construct(500, $message);
   }
 }

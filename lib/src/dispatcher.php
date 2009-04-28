@@ -146,10 +146,15 @@ class Trails_Dispatcher {
   function trails_error($exception) {
     ob_clean();
 
+    # show details for local requests
+    $detailed = $_SERVER['REMOTE_ADDR'] === '127.0.0.1';
+
     $body = sprintf('<html><head><title>Trails Error</title></head>'.
                     '<body><h1>%s</h1><pre>%s</pre></body></html>',
                     htmlentities($exception->__toString()),
-                    htmlentities($exception->getTraceAsString()));
+                    $detailed
+                      ? htmlentities($exception->getTraceAsString())
+                      : '');
 
     if ($exception instanceof Trails_Exception) {
       $response = new Trails_Response($body,

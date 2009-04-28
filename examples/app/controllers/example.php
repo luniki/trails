@@ -52,4 +52,12 @@ class ExampleController extends Trails_Controller {
 
   function debug_action() {
   }
+
+  function show_ip_action() {
+    $this->render_text($_SERVER["REMOTE_ADDR"]);
+  }
+
+  function exception_action() {
+    throw new Trails_Exception(403);
+  }
 }

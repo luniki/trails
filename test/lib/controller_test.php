@@ -38,31 +38,92 @@ Trails_Tests::setup();
 
 Mock::generate('Trails_Dispatcher');
 
+Mock::generatePartial(
+        'Trails_Dispatcher',
+        'MockDispatcher',
+        array('load_controller', 'trails_error'));
+
+Mock::generatePartial('Trails_Controller', 'FooController',
+                      array('index_action', 'rescue'));
+
+
 class ControllerTestCase extends UnitTestCase {
 
   function setUp() {
+    $this->dispatcher = new MockDispatcher();
   }
 
   function tearDown() {
+    unset($this->dispatcher);
   }
 
-
   function test_controller_is_instantiable() {
-    $dispatcher = new MockTrails_Dispatcher();
-    $controller = new Trails_Controller($dispatcher, '');
+    $controller = new Trails_Controller($this->dispatcher, '');
     $this->assertNotNull($controller);
     $this->assertIsA($controller, 'Trails_Controller');
   }
+}
 
-  function test_perform() {
-    $dispatcher = new MockTrails_Dispatcher();
-    $controller = new Trails_Controller($dispatcher, '');
+class DispatcherTestCase extends UnitTestCase {
 
-    var_dump(__METHOD__ . " more todo here");
+  function setUp() {
+    $this->setUpFS();
+    $this->dispatcher = new MockDispatcher();
+    $this->dispatcher->__construct("var://app/", "http://trai.ls", "default");
+  }
 
-    #$response = $controller->perform('');
+  function tearDown() {
+    stream_wrapper_unregister("var");
+    unset($this->dispatcher);
+  }
 
-    #var_dump($response);
+  function setUpFS() {
+    ArrayFileStream::set_filesystem(array(
+      'app' => array(
+        'controllers' => array(
+          'foo.php' => '<?',
+        ),
+      ),
+    ));
+    stream_wrapper_register("var", "ArrayFileStream") or die("Failed to register protocol");
+  }
 
+  function test_should_instantiate_controller() {
+    $controller = new FooController();
+    $controller->__construct($this->dispatcher);
+
+    # Dispatching to FooController#index_action won't set a response thus
+    # provoking an error. By calling #render_nothing before dispatching we can
+    # preclude this.
+    $controller->render_nothing();
+
+    $this->dispatcher->expectOnce('load_controller', array('foo'));
+    $this->dispatcher->setReturnValue('load_controller', $controller);
+
+    $result = $this->dispatcher->dispatch("/foo");
+  }
+
+  function test_should_display_error_on_framework_exception() {
+    $exception = new Trails_Exception(500);
+    $this->dispatcher->throwOn('load_controller', $exception);
+    $this->dispatcher->expectOnce('trails_error', array($exception));
+    $this->dispatcher->setReturnValue('trails_error', new Trails_Response());
+    $result = $this->dispatcher->dispatch("/foo");
+  }
+
+  function test_should_rescue_app_exceptions_in_controller() {
+    $controller = new FooController();
+    $controller->__construct($this->dispatcher);
+
+    $this->dispatcher->expectOnce('load_controller');
+    $this->dispatcher->setReturnValue('load_controller', $controller);
+
+    $exception = new Exception(__LINE__);
+    $controller->throwOn('index_action', $exception);
+    $controller->expectOnce('rescue', array($exception));
+    $controller->setReturnValue('rescue', new Trails_Response());
+
+
+    $this->dispatcher->dispatch("/foo");
   }
 }

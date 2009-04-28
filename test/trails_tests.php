@@ -23,6 +23,7 @@
 
 require_once 'simpletest/unit_tester.php';
 require_once 'simpletest/mock_objects.php';
+require_once 'varstream.php';
 
 /**
  * Setting up tests for trails.

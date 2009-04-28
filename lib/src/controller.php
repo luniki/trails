@@ -29,7 +29,7 @@ class Trails_Controller {
   protected
     $dispatcher,
     $response,
-    $performed = FALSE,
+    $performed,
     $layout;
 
 
@@ -42,6 +42,18 @@ class Trails_Controller {
    */
   function __construct($dispatcher) {
     $this->dispatcher = $dispatcher;
+    $this->erase_response();
+  }
+
+
+  /**
+   * Resets the response of the controller
+   *
+   * @return void
+   */
+  function erase_response() {
+    $this->performed = FALSE;
+    $this->response = new Trails_Response();
   }
 
 
@@ -56,8 +68,6 @@ class Trails_Controller {
    * @return type <description>
    */
   function perform($unconsumed) {
-
-    $this->response = new Trails_Response();
 
     list($action, $args) = $this->extract_action_and_args($unconsumed);
 
@@ -95,7 +105,7 @@ class Trails_Controller {
    *
    * @param  string       the processed string
    *
-   * @return arraye       an array with two elements - a string containing the
+   * @return array        an array with two elements - a string containing the
    *                      action and an array of strings representing the args
    */
   function extract_action_and_args($string) {
@@ -366,22 +376,12 @@ class Trails_Controller {
    */
   function rescue($exception) {
 
-    # log results
-
     # erase former response
     if ($this->performed) {
-      $this->performed = FALSE;
-      $this->response = new Trails_Response();
+      $this->erase_response();
     }
 
-    var_dump($exception);
-
-
-#    if consider_all_requests_local || local_request?
-#      rescue_action_locally(exception)
-#    else
-#      rescue_action_in_public(exception)
-#    end
+    $this->response = $this->dispatcher->trails_error($exception);
 
     return $this->response;
   }

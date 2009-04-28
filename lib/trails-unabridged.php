@@ -27,6 +27,8 @@
 define('TRAILS_VERSION', '0.6.0');
 
 
+
+
 /**
  * The Dispatcher is used to map an incoming HTTP request to a Controller
  * producing a response which is then rendered. To initialize an instance of
@@ -157,14 +159,9 @@ class Trails_Dispatcher {
         list($controller_path, $unconsumed) = $this->parse($uri);
       }
 
-      $class = $this->load_controller($controller_path);
+      $controller = $this->load_controller($controller_path);
 
-      $controller = new $class($this);
       $response = $controller->perform($unconsumed);
-
-    } catch (Trails_Exception $te) {
-
-      $response = $this->trails_error($te);
 
     } catch (Exception $e) {
 
@@ -254,13 +251,13 @@ class Trails_Dispatcher {
   }
 
   /**
-   * Loads the controller file for a given controller path and returns the
-   * class name of that controller. If an error occures, an exception will be
+   * Loads the controller file for a given controller path and return an
+   * instance of that controller. If an error occures, an exception will be
    * thrown.
    *
-   * @param  string  the relative controller path
+   * @param  string            the relative controller path
    *
-   * @return mixed   the controller's class name
+   * @return TrailsController  an instance of that controller
    */
   function load_controller($controller) {
     require_once "{$this->trails_root}/controllers/{$controller}.php";
@@ -268,7 +265,7 @@ class Trails_Dispatcher {
     if (!class_exists($class)) {
       throw new Trails_UnknownController("Controller missing: '$class'");
     }
-    return $class;
+    return new $class($this);
   }
 }
 
@@ -417,6 +414,7 @@ class Trails_Response {
 }
 
 
+
 /**
  * A Trails_Controller is responsible for matching the unconsumed part of an URI
  * to an action using the left over words as arguments for that action. The
@@ -446,7 +444,7 @@ class Trails_Controller {
   protected
     $dispatcher,
     $response,
-    $performed = FALSE,
+    $performed,
     $layout;
 
 
@@ -459,6 +457,18 @@ class Trails_Controller {
    */
   function __construct($dispatcher) {
     $this->dispatcher = $dispatcher;
+    $this->erase_response();
+  }
+
+
+  /**
+   * Resets the response of the controller
+   *
+   * @return void
+   */
+  function erase_response() {
+    $this->performed = FALSE;
+    $this->response = new Trails_Response();
   }
 
 
@@ -473,8 +483,6 @@ class Trails_Controller {
    * @return type <description>
    */
   function perform($unconsumed) {
-
-    $this->response = new Trails_Response();
 
     list($action, $args) = $this->extract_action_and_args($unconsumed);
 
@@ -787,8 +795,7 @@ class Trails_Controller {
 
     # erase former response
     if ($this->performed) {
-      $this->performed = FALSE;
-      $this->response = new Trails_Response();
+      $this->erase_response();
     }
 
     var_dump($exception);
@@ -803,6 +810,7 @@ class Trails_Controller {
     return $this->response;
   }
 }
+
 
 
 /**
@@ -870,42 +878,54 @@ class Trails_Inflector {
  * @version   $Id: trails.php 7001 2008-04-04 11:20:27Z mlunzena $
  */
 
-class Trails_Flash {
+class Trails_Flash implements ArrayAccess {
 
+
+  static $proxy;
 
   /**
    * @ignore
    */
-  private
-    $flash, $used;
+  public
+    $flash = array(), $used = array();
 
 
   /**
-   * Constructor
+   * <MethodDescription>
    *
-   * @return void
+   * @return type       <description>
    */
-  private function __construct($flash = array(), $used = array()) {
-    $this->flash = $flash;
-    $this->used  = $used;
+  static function instance() {
+
+    if (!isset($_SESSION)) {
+      throw new Trails_SessionRequiredException("");
+    }
+
+
+    if (!isset($_SESSION['trails_flash'])) {
+      $_SESSION['trails_flash'] = new Trails_Flash();
+    }
+    return $_SESSION['trails_flash'];
   }
 
 
-  /**
-   * Class field replacement.
-   *
-   * @param object  the flash to set.
-   *
-   * @return object the stored flash.
-   */
-  static function &flash($set = FALSE) {
-    static $flash;
+  function offsetExists($offset) {
+    return isset($this->flash[$offset]);
+  }
 
-    if ($set !== FALSE) {
-      $flash = $set;
-    }
 
-    return $flash;
+  function offsetGet($offset) {
+    return $this->get($offset);
+  }
+
+
+  function offsetSet($offset, $value) {
+    $this->set($offset, $value);
+  }
+
+
+  function offsetUnset($offset) {
+    unset($this->flash[$offset], $this->used[$offset]);
   }
 
 
@@ -923,7 +943,7 @@ class Trails_Flash {
    *
    * @return void
    */
-  private function _use($k = NULL, $v = TRUE) {
+  function _use($k = NULL, $v = TRUE) {
     if ($k) {
       $this->used[$k] = $v;
     }
@@ -952,25 +972,6 @@ class Trails_Flash {
    */
   function discard($k = NULL) {
     $this->_use($k);
-  }
-
-
-  /**
-   * Marks flash entries as used and expose the flash to the view.
-   *
-   * @return void
-   */
-  static function fire() {
-    if (!isset($_SESSION['trails_flash'])) {
-      $flash =& Trails_Flash::flash(new Trails_Flash());
-      $_SESSION['trails_flash'] = array($flash->flash, $flash->used);
-    }
-    else {
-      list($_flash, $_used) = $_SESSION['trails_flash'];
-      $flash =& Trails_Flash::flash(new Trails_Flash($_flash, $_used));
-    }
-
-    $flash->discard();
   }
 
 
@@ -1008,32 +1009,6 @@ class Trails_Flash {
 
 
   /**
-   * Sets a flash that will not be available to the next action, only to the
-   * current.
-   *
-   *    $flash->now('message') = "Hello current action";
-   *
-   * This method enables you to use the flash as a central messaging system in
-   * your app. When you need to pass an object to the next action, you use the
-   * standard flash assign (<tt>set</tt>). When you need to pass an object to
-   * the current action, you use <tt>now</tt>, and your object will vanish when
-   * the current action is done.
-   *
-   * Entries set via <tt>now</tt> are accessed the same way as standard entries:
-   * <tt>$flash->get('my-key')</tt>.
-   *
-   * @param mixed  a key.
-   * @param mixed  its value.
-   *
-   * @return void
-   */
-  function now($k, $v) {
-    $this->discard($k);
-    $this->flash[$k] = $v;
-  }
-
-
-  /**
    * Sets a key's value.
    *
    * @param mixed  a key.
@@ -1061,42 +1036,72 @@ class Trails_Flash {
   }
 
 
+
   /**
-   * Deletes the flash entries that were not marked for keeping.
+   * <MethodDescription>
    *
-   * @return void
+   * @return type       <description>
    */
-  function sweep(){
+  function sweep() {
 
-    # no flash, no sweep
-    if (!isset($_SESSION['trails_flash'])) {
-      return;
-    }
-
-    # get flash
-    $flash =& Trails_Flash::flash();
-
-    // actually sweep
-    $keys = array_keys($flash->flash);
-    foreach ($keys as $k) {
-      if (!$flash->used[$k]) {
-        $flash->_use($k);
+    # remove used values
+    foreach (array_keys($this->flash) as $k) {
+      if ($this->used[$k]) {
+        unset($this->flash[$k], $this->used[$k]);
       } else {
-        unset($flash->flash[$k], $flash->used[$k]);
+        $this->_use($k);
       }
     }
 
-    // cleanup if someone meddled with flash or used
-    $fkeys = array_keys($flash->flash);
-    $ukeys = array_keys($flash->used);
+    # cleanup if someone meddled with flash or used
+    $fkeys = array_keys($this->flash);
+    $ukeys = array_keys($this->used);
     foreach (array_diff($fkeys, $ukeys) as $k => $v) {
-      unset($flash->used[$k]);
+      unset($this->used[$k]);
     }
+  }
 
-    // serialize it
-    $_SESSION['trails_flash'] = array($flash->flash, $flash->used);
+
+  /**
+   * <MethodDescription>
+   *
+   * @return type       <description>
+   */
+  function __toString() {
+    $values = array();
+    foreach ($this->flash as $k => $v) {
+      $values[] = "[$k: " . var_export($v, TRUE) .
+                  "(" . ($this->used[$k] ? "used" : "unused" ) . ")]";
+    }
+    return "[Flash " . join(",", $values) . "]\n";
+  }
+
+
+  /**
+   * <MethodDescription>
+   *
+   * @param  type       <description>
+   *
+   * @return type       <description>
+   */
+  function __sleep() {
+    $this->sweep();
+    return array('flash', 'used');
+  }
+
+
+  /**
+   * <MethodDescription>
+   *
+   * @param  type       <description>
+   *
+   * @return type       <description>
+   */
+  function __wakeUp() {
+    $this->discard();
   }
 }
+
 
 
 /**
@@ -1172,6 +1177,7 @@ class Trails_Exception extends Exception {
   }
 }
 
+
 class Trails_DoubleRenderError extends Trails_Exception {
 
   function __construct() {
@@ -1183,11 +1189,13 @@ class Trails_DoubleRenderError extends Trails_Exception {
   }
 }
 
+
 class Trails_MissingFile extends Trails_Exception {
   function __construct($message) {
     parent::__construct(500, $message);
   }
 }
+
 
 class Trails_RoutingError extends Trails_Exception {
 
@@ -1196,6 +1204,7 @@ class Trails_RoutingError extends Trails_Exception {
   }
 }
 
+
 class Trails_UnknownAction extends Trails_Exception {
 
   function __construct($message) {
@@ -1203,9 +1212,17 @@ class Trails_UnknownAction extends Trails_Exception {
   }
 }
 
+
 class Trails_UnknownController extends Trails_Exception {
 
   function __construct($message) {
     parent::__construct(404, $message);
+  }
+}
+
+
+class Trails_SessionRequiredException extends Trails_Exception {
+  function __construct($message) {
+    parent::__construct(500, $message);
   }
 }

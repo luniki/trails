@@ -20,13 +20,6 @@ class Trails_Flash implements ArrayAccess {
 
 
   /**
-   * <FieldDescription>
-   *
-   * @var Trails_FlashProxy
-   */
-  static $proxy;
-
-  /**
    * @ignore
    */
   public
@@ -41,10 +34,7 @@ class Trails_Flash implements ArrayAccess {
   static function instance() {
 
     if (!isset($_SESSION)) {
-      if (is_null(self::$proxy)) {
-        self::$proxy = new Trails_FlashProxy();
-      }
-      return self::$proxy;
+      throw new Trails_SessionRequiredException();
     }
 
 
@@ -245,56 +235,6 @@ class Trails_Flash implements ArrayAccess {
    */
   function __wakeUp() {
     $this->discard();
-  }
-}
-
-
-/**
- * <ClassDescription>
- *
- * @package     <package>
- * @subpackage  <package>
- *
- * @author    mlunzena
- * @copyright (c) Authors
- * @version   $Id$
- */
-
-class Trails_FlashProxy implements ArrayAccess {
-
-
-  function delegate() {
-    if (!isset($_SESSION)) {
-      throw new Trails_SessionRequiredException();
-    }
-    return Trails_Flash::instance();
-  }
-
-  function offsetExists($offset) {
-    $arguments = func_get_args();
-    return $this->__call(__FUNCTION__, $arguments);
-  }
-
-
-  function offsetGet($offset) {
-    $arguments = func_get_args();
-    return $this->__call(__FUNCTION__, $arguments);
-  }
-
-
-  function offsetSet($offset, $value) {
-    $arguments = func_get_args();
-    return $this->__call(__FUNCTION__, $arguments);
-  }
-
-
-  function offsetUnset($offset) {
-    $arguments = func_get_args();
-    return $this->__call(__FUNCTION__, $arguments);
-  }
-
-  function __call($name, $arguments) {
-    return call_user_func_array(array($this->delegate(), $name), $arguments);
   }
 }
 

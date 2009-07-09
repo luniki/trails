@@ -37,18 +37,12 @@ Trails_Tests::setup();
 
 class FlashWithoutSessionTestCase extends UnitTestCase {
 
-  function test_should_return_a_proxy_without_a_session() {
-    $flash = Trails_Flash::instance();
-    $this->assertTrue($flash instanceof Trails_FlashProxy);
-  }
-
-  function test_should_throw_an_error_accessing_the_proxy_without_a_session() {
+  function test_should_throw_an_error_without_a_session() {
     $this->expectException('Trails_SessionRequiredException');
     $flash = Trails_Flash::instance();
-    $flash['key'] = 'provoke an exception';
   }
 
-  function test_should_not_throw_an_error_accessing_the_proxy_with_a_session() {
+  function test_should_not_throw_an_error_with_a_session() {
     $_SESSION = array();
     $flash = Trails_Flash::instance();
     $flash['key'] = 'do not provoke an exception';
@@ -115,6 +109,14 @@ class FlashWithSessionTestCase extends UnitTestCase {
     $this->flash->set_ref('a', $a);
     $got = $this->flash->get('a');
     $this->assertReference($got, $a);
+  }
+
+  function test_should_access_reference_after_set_ref() {
+    $a = array();
+    $this->flash->set_ref('a', $a);
+    $a[] = 42;
+    $got = $this->flash->get('a');
+    $this->assertEqual($got, array(42));
   }
 
   function test_should_discard_one() {

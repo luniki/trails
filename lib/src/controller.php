@@ -71,9 +71,6 @@ class Trails_Controller {
 
     list($action, $args) = $this->extract_action_and_args($unconsumed);
 
-    # initialize flash
-    $this->flash = Trails_Flash::instance();
-
     # call before filter
     $before_filter_result = $this->before_filter($action, $args);
 

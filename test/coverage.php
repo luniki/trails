@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 
-$PHPCOVERAGE_HOME = '/usr/share/php/spikephpcoverage/';
+$PHPCOVERAGE_HOME = '/usr/share/php/spikephpcoverage/src/';
 $PHPCOVERAGE_REPORT_DIR = '/tmp/report/';
 $PHPCOVERAGE_APPBASE_PATH = '/tmp/report/';
 
@@ -31,8 +31,8 @@ require_once $PHPCOVERAGE_HOME . 'reporter/HtmlCoverageReporter.php';
 
 $reporter = new HtmlCoverageReporter('Code Coverage Report', '', $PHPCOVERAGE_REPORT_DIR);
 
-$includePaths = array('../lib');
-$excludePaths = array('');
+$includePaths = array('../lib/src');
+$excludePaths = array('../lib/src/trails.php', '../lib/src/HEADER.php');
 $cov = new CoverageRecorder($includePaths, $excludePaths, $reporter);
 
 $cov->startInstrumentation();

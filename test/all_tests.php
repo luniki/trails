@@ -21,9 +21,6 @@
 # SOFTWARE.
 
 
-# set error reporting
-error_reporting(E_ALL);
-
 # load required files
 require_once 'simpletest/unit_tester.php';
 require_once 'simpletest/reporter.php';

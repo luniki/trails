@@ -20,37 +20,68 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
 class RouterTestCase extends UnitTestCase {
 
-  var $router;
+  private $dispatcher;
 
   function setUp() {
-    $this->router = new MockDispatcher($this);
-
-    $this->router->setReturnValue('file_exists', TRUE, array('path'));
-    $this->router->setReturnValue('file_exists', TRUE, array('path/file.php'));
-    $this->router->setReturnValue('file_exists', FALSE);
-
-    $this->router->__construct('', '', '');
+    $this->setUpFS();
+    $this->dispatcher = new Trails_Dispatcher("var://app/", "http://trai.ls", "default");
   }
 
   function tearDown() {
-    $this->router = NULL;
+    stream_wrapper_unregister("var");
+    unset($this->dispatcher);
+  }
+
+  function setUpFS() {
+    ArrayFileStream::set_filesystem(array(
+      'app' => array(
+          'controllers' => array(
+              'bar.php' => '<?',
+              'foo.php' => '<?',
+              'foo' => array(
+                  'foobar.php' => '<?'
+              ),
+              'baz' => array(
+                  'file.php' => '<?'
+              ),
+          ),
+      ),
+    ));
+    stream_wrapper_register("var", "ArrayFileStream") or die("Failed to register protocol");
   }
 
   function test_route_matches() {
-    $this->assertEqual($this->router->parse('path/file'),
-                       array('path/file', ''));
+    $this->assertEqual(array('bar', ''),
+                       $this->dispatcher->parse('bar'));
   }
 
   function test_throws_expception_if_route_not_found() {
-    $this->expectException();
-    $this->router->parse('');
+    $this->expectException('Trails_RoutingError');
+    $this->dispatcher->parse('grue');
   }
 
   function test_throws_expception_if_route_only_partially_matches() {
-    $this->expectException();
-    $this->router->parse('path');
+    $this->expectException('Trails_RoutingError');
+    $this->dispatcher->parse('baz');
+  }
+
+  function test_parse() {
+
+    $paths = array(
+      'bar'                 => array('bar', ''),
+      'bar/show'            => array('bar', 'show'),
+      'bar/show/1/2'        => array('bar', 'show/1/2'),
+      'bar/show///1///2'    => array('bar', 'show///1///2'),
+      'foo'                 => array('foo', ''),
+      'foo/foobar/list'     => array('foo', 'foobar/list'),
+    );
+
+    foreach ($paths as $path => $expected) {
+        $this->assertEqual($expected, $this->dispatcher->parse($path));
+    }
   }
 }
 

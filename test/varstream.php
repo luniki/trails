@@ -7,6 +7,7 @@ class ArrayFileStream {
   private static $fs;
 
   static function set_filesystem(array $fs) {
+
     ArrayFileStream::$fs = $fs;
   }
 
@@ -111,6 +112,7 @@ class ArrayFileStream {
   }
 
   function stream_stat() {
+
     return array('size' => is_array($this->open_file)
                            ? sizeof($this->open_file)
                            : strlen($this->open_file));
@@ -145,8 +147,14 @@ class ArrayFileStream {
   }
 
   function url_stat($path, $flags) {
-    $time = time();
 
+    try {
+      $file =& self::get_file($path);
+    } catch (Exception $e) {
+      return FALSE;
+    }
+
+    $time = time();
     $keys = array(
       'dev'     => 0,
       'ino'     => 0,
@@ -156,7 +164,7 @@ class ArrayFileStream {
       'gid'     => function_exists('posix_getgid') ? posix_getgid() : 0,
       'rdev'    => 0,
       'size'    => $flags & STREAM_URL_STAT_QUIET
-                   ? @strlen($this->_pointer) : strlen($this->_pointer),
+                   ? @strlen($file) : strlen($file),
       'atime'   => $time,
       'mtime'   => $time,
       'ctime'   => $time,

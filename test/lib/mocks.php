@@ -27,7 +27,3 @@ Mock::generatePartial(
 
 Mock::generatePartial('Trails_Controller', 'FooController',
                       array('index_action', 'rescue'));
-
-Mock::generatePartial('Trails_Dispatcher', 'MockDispatcher',
-                      array('file_exists'));
-

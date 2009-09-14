@@ -1,6 +1,6 @@
 <?php
 
-# Copyright (c)  2007 - Marcus Lunzenauer <mlunzena@uos.de>
+# Copyright (c)  2009 - Marcus Lunzenauer <mlunzena@uos.de>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,11 +20,28 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+class InflectorTestCase extends UnitTestCase {
 
-$config = array();
+  function inflector_strings() {
+    $strings = array(
+      'hello'               => 'Hello',
+      'hello_world'         => 'HelloWorld',
+      'h_e_l_l_o'           => 'HELLO',
+      'hello123world'       => 'Hello123world',
+      'hello/world'         => 'Hello_World',
+      'hello/another_world' => 'Hello_AnotherWorld',
+      );
+    return $strings;
+  }
 
-$config['foo'] = '23';
+  function test_camelize() {
+    foreach ($this->inflector_strings() as $lower_case => $camelized)
+      $this->assertEqual($camelized, Trails_Inflector::camelize($lower_case));
+  }
 
-$bar = new stdClass();
-$bar->id = 42;
-$config['bar'] =& $bar;
+  function test_underscore() {
+    foreach ($this->inflector_strings() as $lower_case => $camelized)
+      $this->assertEqual($lower_case, Trails_Inflector::underscore($camelized));
+  }
+}
+

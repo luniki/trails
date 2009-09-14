@@ -28,7 +28,25 @@ error_reporting(E_ALL);
 require_once 'simpletest/unit_tester.php';
 require_once 'simpletest/reporter.php';
 require_once 'simpletest/collector.php';
+require_once 'simpletest/mock_objects.php';
 
+require_once 'varstream.php';
+
+# define TRAILS_ROOT
+define('TRAILS_ROOT', dirname(__FILE__) . '/trails_root/app');
+
+ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . TRAILS_ROOT);
+
+# load required files
+$lib_path = dirname(__FILE__) . '/../lib/src/';
+require_once $lib_path . 'dispatcher.php';
+require_once $lib_path . 'response.php';
+require_once $lib_path . 'controller.php';
+require_once $lib_path . 'inflector.php';
+require_once $lib_path . 'flash.php';
+require_once $lib_path . 'exception.php';
+
+require_once 'lib/mocks.php';
 
 # collect all tests
 $all = new TestSuite('All tests');

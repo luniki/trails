@@ -21,9 +21,6 @@
 # SOFTWARE.
 
 
-require_once dirname(__FILE__) . '/../trails_tests.php';
-Trails_Tests::setup();
-
 /**
  * Testcase for Flash.
  *

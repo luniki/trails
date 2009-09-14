@@ -1,6 +1,6 @@
 <?php
 
-# Copyright (c)  2007 - Marcus Lunzenauer <mlunzena@uos.de>
+# Copyright (c)  2009 - Marcus Lunzenauer <mlunzena@uos.de>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,37 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-class RouterTestCase extends UnitTestCase {
+Mock::generatePartial(
+        'Trails_Dispatcher',
+        'PartialMockDispatcher',
+        array('load_controller', 'trails_error'));
 
-  var $router;
+Mock::generatePartial('Trails_Controller', 'FooController',
+                      array('index_action', 'rescue'));
 
-  function setUp() {
-    $this->router = new MockDispatcher($this);
-
-    $this->router->setReturnValue('file_exists', TRUE, array('path'));
-    $this->router->setReturnValue('file_exists', TRUE, array('path/file.php'));
-    $this->router->setReturnValue('file_exists', FALSE);
-
-    $this->router->__construct('', '', '');
-  }
-
-  function tearDown() {
-    $this->router = NULL;
-  }
-
-  function test_route_matches() {
-    $this->assertEqual($this->router->parse('path/file'),
-                       array('path/file', ''));
-  }
-
-  function test_throws_expception_if_route_not_found() {
-    $this->expectException();
-    $this->router->parse('');
-  }
-
-  function test_throws_expception_if_route_only_partially_matches() {
-    $this->expectException();
-    $this->router->parse('path');
-  }
-}
+Mock::generatePartial('Trails_Dispatcher', 'MockDispatcher',
+                      array('file_exists'));
 

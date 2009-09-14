@@ -49,6 +49,7 @@ class ControllerTestCase extends UnitTestCase {
 
   function setUp() {
     $this->dispatcher = new PartialMockDispatcher();
+    $this->dispatcher->trails_uri = 'http://base';
   }
 
   function tearDown() {
@@ -56,9 +57,28 @@ class ControllerTestCase extends UnitTestCase {
   }
 
   function test_controller_is_instantiable() {
-    $controller = new Trails_Controller($this->dispatcher, '');
+    $controller = new Trails_Controller($this->dispatcher);
     $this->assertNotNull($controller);
     $this->assertIsA($controller, 'Trails_Controller');
+  }
+
+  function test_url_for_contains_the_base_url() {
+    $controller = new Trails_Controller($this->dispatcher);
+    $this->assertPattern('|^http://base/$|', $controller->url_for(''));
+  }
+
+  function test_url_for_urlencodes_not_the_first_argument() {
+    $controller = new Trails_Controller($this->dispatcher);
+    $url = 'wiki/show/one+and+a+half';
+    $this->assertEqual('http://base/' . $url,
+                       $controller->url_for('wiki/show', 'one and a half'));
+  }
+
+  function test_url_for_joins_arguments_with_slashes() {
+    $controller = new Trails_Controller($this->dispatcher);
+    $url = 'wiki/show/group/main';
+    $this->assertEqual('http://base/' . $url,
+                       $controller->url_for('wiki/show', 'group', 'main'));
   }
 }
 

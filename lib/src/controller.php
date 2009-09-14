@@ -324,21 +324,43 @@ class Trails_Controller {
    * Example:
    * Your Trails application is located at 'http://example.com/dispatch.php'.
    * So your dispatcher's trails_uri is set to 'http://example.com/dispatch.php'
-   * If you want the URL to your 'wiki' controller with action 'index' you
-   * should send:
+   * If you want the URL to your 'wiki' controller with action 'show' and
+   * parameter 'page' you should send:
    *
-   *   $url = $controller->url_for('wiki/index');
+   *   $url = $controller->url_for('wiki/show', 'page');
    *
-   * $url should then contain 'http://example.com/dispatch.php/wiki/index'.
+   * $url should then contain 'http://example.com/dispatch.php/wiki/show/page'.
    *
-   * NOTE: This method will likely get changed in the next release.
+   * The first parameter is a string containing the controller and optionally an
+   * action:
    *
-   * @param  string  a string containing a route
+   *   - "{controller}/{action}"
+   *   - "path/to/controller/action"
+   *   - "controller"
+   *
+   * This "controller/action" string is not url encoded. You may provide
+   * additional parameter which will be urlencoded and concatenated with
+   * slashes:
+   *
+   *     $controller->url_for('wiki/show', 'page');
+   *     -> 'wiki/show/page'
+   *
+   *     $controller->url_for('wiki/show', 'page', 'one and a half');
+   *     -> 'wiki/show/page/one+and+a+half'
+   *
+   * @param  string   a string containing a controller and optionally an action
+   * @param  strings  optional arguments
    *
    * @return string  a URL to this route
    */
-  function url_for($to) {
-    return $this->dispatcher->trails_uri . '/' . $to;
+  function url_for($to/*, ...*/) {
+
+    # urlencode all but the first argument
+    $args = func_get_args();
+    $args = array_map('urlencode', $args);
+    $args[0] = $to;
+
+    return $this->dispatcher->trails_uri . '/' . join('/', $args);
   }
 
 

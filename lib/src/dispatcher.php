@@ -91,7 +91,7 @@ class Trails_Dispatcher {
     ob_start();
     $level = ob_get_level();
 
-    $this->map_uri_to_response($this->clean_uri((string) $uri))->output();
+    $this->map_uri_to_response($this->clean_request_uri((string) $uri))->output();
 
     while (ob_get_level() >= $level) {
       ob_end_flush();
@@ -178,7 +178,7 @@ class Trails_Dispatcher {
    *
    * @return string  the cleaned string
    */
-  function clean_uri($uri) {
+  function clean_request_uri($uri) {
     if (FALSE !== ($pos = strpos($uri, '?'))) {
       $uri = substr($uri, 0, $pos);
     }

@@ -120,7 +120,7 @@ class Trails_Dispatcher {
     ob_start();
     $level = ob_get_level();
 
-    $this->map_uri_to_response($this->clean_uri((string) $uri))->output();
+    $this->map_uri_to_response($this->clean_request_uri((string) $uri))->output();
 
     while (ob_get_level() >= $level) {
       ob_end_flush();
@@ -207,7 +207,7 @@ class Trails_Dispatcher {
    *
    * @return string  the cleaned string
    */
-  function clean_uri($uri) {
+  function clean_request_uri($uri) {
     if (FALSE !== ($pos = strpos($uri, '?'))) {
       $uri = substr($uri, 0, $pos);
     }
@@ -406,15 +406,37 @@ class Trails_Response {
    */
   function output() {
     if (isset($this->status)) {
-      header(sprintf('HTTP/1.1 %d %s', $this->status, $this->reason),
-             TRUE, $this->status);
+      $this->send_header(sprintf('HTTP/1.1 %d %s',
+                                 $this->status, $this->reason),
+                         TRUE,
+                         $this->status);
     }
 
     foreach ($this->headers as $k => $v) {
-      header("$k: $v");
+      $this->send_header("$k: $v");
     }
 
     echo $this->body;
+  }
+
+
+  /**
+   * Internally used function to actually send headers
+   *
+   * @param  string     the HTTP header
+   * @param  bool       optional; TRUE if previously sent header should be
+   *                    replaced – FALSE otherwise (default)
+   * @param  integer    optional; the HTTP response code
+   *
+   * @return void
+   */
+  function send_header($header, $replace = FALSE, $status = NULL) {
+    if (isset($status)) {
+      header($header, $replace, $status);
+    }
+    else {
+      header($header, $replace);
+    }
   }
 }
 
@@ -744,21 +766,43 @@ class Trails_Controller {
    * Example:
    * Your Trails application is located at 'http://example.com/dispatch.php'.
    * So your dispatcher's trails_uri is set to 'http://example.com/dispatch.php'
-   * If you want the URL to your 'wiki' controller with action 'index' you
-   * should send:
+   * If you want the URL to your 'wiki' controller with action 'show' and
+   * parameter 'page' you should send:
    *
-   *   $url = $controller->url_for('wiki/index');
+   *   $url = $controller->url_for('wiki/show', 'page');
    *
-   * $url should then contain 'http://example.com/dispatch.php/wiki/index'.
+   * $url should then contain 'http://example.com/dispatch.php/wiki/show/page'.
    *
-   * NOTE: This method will likely get changed in the next release.
+   * The first parameter is a string containing the controller and optionally an
+   * action:
    *
-   * @param  string  a string containing a route
+   *   - "{controller}/{action}"
+   *   - "path/to/controller/action"
+   *   - "controller"
+   *
+   * This "controller/action" string is not url encoded. You may provide
+   * additional parameter which will be urlencoded and concatenated with
+   * slashes:
+   *
+   *     $controller->url_for('wiki/show', 'page');
+   *     -> 'wiki/show/page'
+   *
+   *     $controller->url_for('wiki/show', 'page', 'one and a half');
+   *     -> 'wiki/show/page/one+and+a+half'
+   *
+   * @param  string   a string containing a controller and optionally an action
+   * @param  strings  optional arguments
    *
    * @return string  a URL to this route
    */
-  function url_for($to) {
-    return $this->dispatcher->trails_uri . '/' . $to;
+  function url_for($to/*, ...*/) {
+
+    # urlencode all but the first argument
+    $args = func_get_args();
+    $args = array_map('urlencode', $args);
+    $args[0] = $to;
+
+    return $this->dispatcher->trails_uri . '/' . join('/', $args);
   }
 
 
@@ -1064,10 +1108,11 @@ class Trails_Flash implements ArrayAccess {
   function __toString() {
     $values = array();
     foreach ($this->flash as $k => $v) {
-      $values[] = "[$k: " . var_export($v, TRUE) .
-                  "(" . ($this->used[$k] ? "used" : "unused" ) . ")]";
+      $values[] = sprintf("'%s': [%s, '%s']",
+                          $k, var_export($v, TRUE),
+                          $this->used[$k] ? "used" : "unused");
     }
-    return "[Flash " . join(",", $values) . "]\n";
+    return "{" . join(", ", $values) . "}\n";
   }
 
 

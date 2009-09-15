@@ -130,15 +130,37 @@ class Trails_Response {
    */
   function output() {
     if (isset($this->status)) {
-      header(sprintf('HTTP/1.1 %d %s', $this->status, $this->reason),
-             TRUE, $this->status);
+      $this->send_header(sprintf('HTTP/1.1 %d %s',
+                                 $this->status, $this->reason),
+                         TRUE,
+                         $this->status);
     }
 
     foreach ($this->headers as $k => $v) {
-      header("$k: $v");
+      $this->send_header("$k: $v");
     }
 
     echo $this->body;
+  }
+
+
+  /**
+   * Internally used function to actually send headers
+   *
+   * @param  string     the HTTP header
+   * @param  bool       optional; TRUE if previously sent header should be
+   *                    replaced – FALSE otherwise (default)
+   * @param  integer    optional; the HTTP response code
+   *
+   * @return void
+   */
+  function send_header($header, $replace = FALSE, $status = NULL) {
+    if (isset($status)) {
+      header($header, $replace, $status);
+    }
+    else {
+      header($header, $replace);
+    }
   }
 }
 

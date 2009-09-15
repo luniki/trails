@@ -1,6 +1,6 @@
 <?php
 
-# Copyright (c)  2007 - Marcus Lunzenauer <mlunzena@uos.de>
+# Copyright (c)  2009 - Marcus Lunzenauer <mlunzena@uos.de>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -50,7 +50,8 @@ class RouterTestCase extends UnitTestCase {
           ),
       ),
     ));
-    stream_wrapper_register("var", "ArrayFileStream") or die("Failed to register protocol");
+    stream_wrapper_register('var', 'ArrayFileStream') or
+      die('Failed to register protocol');
   }
 
   function test_route_matches() {
@@ -69,7 +70,6 @@ class RouterTestCase extends UnitTestCase {
   }
 
   function test_parse() {
-
     $paths = array(
       'bar'                 => array('bar', ''),
       'bar/show'            => array('bar', 'show'),

@@ -21,17 +21,6 @@
 # SOFTWARE.
 
 
-/**
- * Testcase for Flash.
- *
- * @package    trails
- * @subpackage test
- *
- * @author    mlunzena
- * @copyright (c) Authors
- * @version   $Id: flash_test.php 6258 2007-10-02 11:18:05Z mlunzena $
- */
-
 class FlashWithoutSessionTestCase extends UnitTestCase {
 
   function test_should_throw_an_error_without_a_session() {
@@ -84,6 +73,18 @@ class FlashWithSessionTestCase extends UnitTestCase {
     $a_value = new stdClass();
     $this->flash['key'] = $a_value;
     $this->assertReference($a_value, $this->flash['key']);
+  }
+
+  function test_should_remove_value_with_unset() {
+    $this->flash['key'] = 'value';
+    unset($this->flash['key']);
+    $this->assertFalse($this->flash['key']);
+  }
+
+  function test_should_be_able_to_use_isset_to_ask_for_existence() {
+    $this->flash['key'] = 'value';
+    $this->assertTrue(isset($this->flash['key']));
+    $this->assertFalse(isset($this->flash['not a key']));
   }
 
   function test_should_return_previously_set_values_after_one_redirect() {

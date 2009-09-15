@@ -206,10 +206,11 @@ class Trails_Flash implements ArrayAccess {
   function __toString() {
     $values = array();
     foreach ($this->flash as $k => $v) {
-      $values[] = "[$k: " . var_export($v, TRUE) .
-                  "(" . ($this->used[$k] ? "used" : "unused" ) . ")]";
+      $values[] = sprintf("'%s': [%s, '%s']",
+                          $k, var_export($v, TRUE),
+                          $this->used[$k] ? "used" : "unused");
     }
-    return "[Flash " . join(",", $values) . "]\n";
+    return "{" . join(", ", $values) . "}\n";
   }
 
 

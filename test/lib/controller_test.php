@@ -1,6 +1,6 @@
 <?php
 
-# Copyright (c)  2007 - Marcus Lunzenauer <mlunzena@uos.de>
+# Copyright (c)  2009 - Marcus Lunzenauer <mlunzena@uos.de>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,18 +19,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-
-/**
- * Testcase for Controller.
- *
- * @package    trails
- * @subpackage test
- *
- * @author    mlunzena
- * @copyright (c) Authors
- * @version   $Id: controller_test.php 7001 2008-04-04 11:20:27Z mlunzena $
- */
 
 
 class ControllerTestCase extends UnitTestCase {

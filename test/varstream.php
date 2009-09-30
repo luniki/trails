@@ -7,7 +7,6 @@ class ArrayFileStream {
   private static $fs;
 
   static function set_filesystem(array $fs) {
-
     ArrayFileStream::$fs = $fs;
   }
 
@@ -112,7 +111,6 @@ class ArrayFileStream {
   }
 
   function stream_stat() {
-
     return array('size' => is_array($this->open_file)
                            ? sizeof($this->open_file)
                            : strlen($this->open_file));

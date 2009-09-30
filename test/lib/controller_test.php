@@ -56,5 +56,47 @@ class ControllerTestCase extends UnitTestCase {
     $this->assertEqual('http://base/' . $url,
                        $controller->url_for('wiki/show', 'group', 'main'));
   }
+
+  function test_should_rescue_app_exceptions_in_controller() {
+
+    $controller = new RescueController();
+    $controller->__construct($this->dispatcher);
+
+    $this->dispatcher->setReturnValue('parse', array('foo', 'index'));
+    $this->dispatcher->setReturnValue('load_controller', $controller);
+
+    $exception = new Exception(__LINE__);
+    $controller->throwOn('index_action', $exception);
+    $controller->expectOnce('rescue', array($exception));
+    $controller->setReturnValue('rescue', new Trails_Response());
+
+
+    $this->dispatcher->dispatch('/foo/index');
+  }
+}
+
+
+class DoesNotUnderstandController extends Trails_Controller {
+  function __construct($test) {
+    $this->test = $test;
+  }
+
+  function does_not_understand($action, $args) {
+    $this->test->call();
+    $this->performed = TRUE;
+  }
+}
+
+class DoesNotUnderstandControllerTestCase extends UnitTestCase {
+  function call() {
+    $this->called = TRUE;
+  }
+
+  function test_should_invoke_does_not_understand_with_unknown_action() {
+    $this->called = FALSE;
+    $controller = new DoesNotUnderstandController($this);
+    $controller->perform('gruffelo');
+    $this->assertTrue($this->called, "#does_not_understand was not called");
+  }
 }
 

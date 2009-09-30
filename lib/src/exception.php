@@ -47,30 +47,6 @@ class Trails_Exception extends Exception {
   function __toString() {
     return "{$this->code} {$this->message}";
   }
-
-
-  /**
-   * <MethodDescription>
-   *
-   * @param  type       <description>
-   *
-   * @return type       <description>
-   */
-  static function errorHandlerCallback($errno, $string, $file, $line, $context) {
-
-    if (!($errno & error_reporting())) {
-      return;
-    }
-
-    if ($errno == E_NOTICE || $errno == E_WARNING || $errno == E_STRICT) {
-      return FALSE;
-    }
-
-    $e = new Trails_Exception(500, $string);
-    $e->line = $line;
-    $e->file = $file;
-    throw $e;
-  }
 }
 
 

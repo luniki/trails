@@ -46,7 +46,7 @@ class DispatcherTestCase extends UnitTestCase {
   }
 
   function test_should_instantiate_controller() {
-    $controller = new FooController();
+    $controller = new RescueController();
     $controller->__construct($this->dispatcher);
 
     # Dispatching to FooController#index_action won't set a response thus
@@ -56,6 +56,8 @@ class DispatcherTestCase extends UnitTestCase {
 
     $this->dispatcher->expectOnce('load_controller', array('foo'));
     $this->dispatcher->setReturnValue('load_controller', $controller);
+    $this->dispatcher->expectOnce('parse');
+    $this->dispatcher->setReturnValue('parse', array('foo'));
 
     $result = $this->dispatcher->dispatch("/foo");
   }
@@ -68,19 +70,10 @@ class DispatcherTestCase extends UnitTestCase {
     $result = $this->dispatcher->dispatch("/foo");
   }
 
-  function test_should_rescue_app_exceptions_in_controller() {
-    $controller = new FooController();
-    $controller->__construct($this->dispatcher);
-
-    $this->dispatcher->expectOnce('load_controller');
-    $this->dispatcher->setReturnValue('load_controller', $controller);
-
-    $exception = new Exception(__LINE__);
-    $controller->throwOn('index_action', $exception);
-    $controller->expectOnce('rescue', array($exception));
-    $controller->setReturnValue('rescue', new Trails_Response());
-
-
-    $this->dispatcher->dispatch("/foo");
+  function test_should_throw_an_exception_if_default_controller_could_not_be_found() {
+    $dispatcher = new PartialMockDispatcher();
+    $dispatcher->expectOnce('trails_error');
+    $dispatcher->setReturnValue('trails_error', new Trails_Response());
+    $dispatcher->dispatch("");
   }
 }

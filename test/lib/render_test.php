@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-Mock::generatePartial('Trails_Dispatcher', 'PartialMockDispatcher',
-                      array('load_controller', 'parse', 'trails_error'));
 
-Mock::generatePartial('Trails_Controller', 'RescueController',
-                      array('index_action', 'rescue'));
+class RenderTestCase extends UnitTestCase {
+  function setUp() {
+  }
 
-Mock::generatePartial('Trails_Response', 'PartialMockResponse',
-                      array('send_header'));
+  function tearDown() {
+  }
+}
 

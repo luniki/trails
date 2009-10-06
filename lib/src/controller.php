@@ -189,7 +189,7 @@ class Trails_Controller {
     $this->performed = TRUE;
 
     # get uri; keep absolute URIs
-    $url = preg_match('#^[a-z]+://#', $to)
+    $url = preg_match('#^(/|\w+://)#', $to)
            ? $to
            : $this->url_for($to);
 

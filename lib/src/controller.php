@@ -58,6 +58,16 @@ class Trails_Controller {
 
 
   /**
+   * Return this controller's response
+   *
+   * @return mixed  the controller's response
+   */
+  function get_response() {
+    return $this->response;
+  }
+
+
+  /**
    * This method extracts an action string and further arguments from it's
    * parameter. The action string is mapped to a method being called afterwards
    * using the said arguments. That method is called and a response object is

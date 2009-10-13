@@ -23,20 +23,6 @@
 class FooController extends Trails_Controller {
   function index_action() {
   }
-
-  function redirect_me_action() {
-    $this->redirect('where');
-  }
-
-  function double_render_action() {
-    $this->render_nothing();
-    $this->render_nothing();
-  }
-
-  function double_render_and_redirect_action() {
-    $this->render_nothing();
-    $this->redirect('where');
-  }
 }
 
 class ControllerRenderTestCase extends UnitTestCase {

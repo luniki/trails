@@ -26,6 +26,9 @@ Mock::generatePartial('Trails_Dispatcher', 'PartialMockDispatcher',
 Mock::generatePartial('Trails_Controller', 'RescueController',
                       array('index_action', 'rescue'));
 
+Mock::generatePartial('Trails_Controller', 'FilteringController',
+                      array('before_filter', 'action_filter'));
+
 Mock::generatePartial('Trails_Response', 'PartialMockResponse',
                       array('send_header'));
 

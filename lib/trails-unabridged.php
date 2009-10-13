@@ -24,7 +24,7 @@
 /**
  * The version of the trails library.
  */
-define('TRAILS_VERSION', '0.6.1');
+define('TRAILS_VERSION', '0.6.2');
 
 
 
@@ -113,9 +113,8 @@ class Trails_Dispatcher {
    */
   function dispatch($uri) {
 
-    $old_handler = set_error_handler(array('Trails_Exception',
-                                           'errorHandlerCallback'),
-                                     E_ALL);
+    $old_handler =
+      set_error_handler(array($this, 'error_handler'), E_ALL);
 
     ob_start();
     $level = ob_get_level();
@@ -271,6 +270,31 @@ class Trails_Dispatcher {
       throw new Trails_UnknownController("Controller missing: '$class'");
     }
     return new $class($this);
+  }
+
+
+  /**
+   * <MethodDescription>
+   * # TODO (mlunzena) add description
+   *
+   * @param  type       <description>
+   *
+   * @return type       <description>
+   */
+  function error_handler($errno, $string, $file, $line, $context) {
+
+    if (!($errno & error_reporting())) {
+      return;
+    }
+
+    if ($errno == E_NOTICE || $errno == E_WARNING || $errno == E_STRICT) {
+      return FALSE;
+    }
+
+    $e = new Trails_Exception(500, $string);
+    $e->line = $line;
+    $e->file = $file;
+    throw $e;
   }
 }
 
@@ -500,6 +524,16 @@ class Trails_Controller {
 
 
   /**
+   * Return this controller's response
+   *
+   * @return mixed  the controller's response
+   */
+  function get_response() {
+    return $this->response;
+  }
+
+
+  /**
    * This method extracts an action string and further arguments from it's
    * parameter. The action string is mapped to a method being called afterwards
    * using the said arguments. That method is called and a response object is
@@ -631,15 +665,11 @@ class Trails_Controller {
     $this->performed = TRUE;
 
     # get uri; keep absolute URIs
-    $url = preg_match('#^[a-z]+://#', $to)
+    $url = preg_match('#^(/|\w+://)#', $to)
            ? $to
            : $this->url_for($to);
 
-    # redirect
-    $this->response
-      ->add_header('Location', $url)
-      ->set_body(sprintf('<html><head><meta http-equiv="refresh" content="0;'.
-                         'url=%s"/></head></html>', htmlentities($url)));
+    $this->response->add_header('Location', $url)->set_status(302);
   }
 
 
@@ -682,7 +712,7 @@ class Trails_Controller {
   function render_action($action) {
     $class = get_class($this);
     $controller_name =
-      Trails_Inflector::underscore(substr($class, 0, strlen($class) - 10));
+      Trails_Inflector::underscore(substr($class, 0, -10));
 
     $this->render_template($controller_name.'/'.$action, $this->layout);
   }
@@ -699,13 +729,10 @@ class Trails_Controller {
   function render_template($template_name, $layout = NULL) {
 
     # open template
-    $factory =
-      new Flexi_TemplateFactory($this->dispatcher->trails_root . '/views/');
+    $factory = new Flexi_TemplateFactory($this->dispatcher->trails_root .
+                                         '/views/');
 
     $template = $factory->open($template_name);
-    if (is_null($template)) {
-      throw new Trails_MissingFile("No such template: '$template_name'");
-    }
 
     # template requires setup ?
     switch (get_class($template)) {
@@ -839,15 +866,7 @@ class Trails_Controller {
    * @return object     a response object
    */
   function rescue($exception) {
-
-    # erase former response
-    if ($this->performed) {
-      $this->erase_response();
-    }
-
-    $this->response = $this->dispatcher->trails_error($exception);
-
-    return $this->response;
+    return ($this->response = $this->dispatcher->trails_error($exception));
   }
 }
 
@@ -1189,30 +1208,6 @@ class Trails_Exception extends Exception {
    */
   function __toString() {
     return "{$this->code} {$this->message}";
-  }
-
-
-  /**
-   * <MethodDescription>
-   *
-   * @param  type       <description>
-   *
-   * @return type       <description>
-   */
-  static function errorHandlerCallback($errno, $string, $file, $line, $context) {
-
-    if (!($errno & error_reporting())) {
-      return;
-    }
-
-    if ($errno == E_NOTICE || $errno == E_WARNING || $errno == E_STRICT) {
-      return FALSE;
-    }
-
-    $e = new Trails_Exception(500, $string);
-    $e->line = $line;
-    $e->file = $file;
-    throw $e;
   }
 }
 

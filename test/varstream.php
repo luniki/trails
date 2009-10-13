@@ -33,14 +33,17 @@ class ArrayFileStream {
   }
 
   function stream_close() {
+
     # nothing to do
   }
 
   function stream_flush() {
+
     # nothing to do
   }
 
   function stream_open($path, $mode, $options, $opened_path) {
+
     try {
       $this->open_file =& self::get_file($path);
       $this->position = 0;
@@ -51,12 +54,14 @@ class ArrayFileStream {
   }
 
   function stream_read($count) {
+
     $ret = substr($this->open_file, $this->position, $count);
     $this->position += strlen($ret);
     return $ret;
   }
 
   function stream_write($data) {
+
     $left  = substr($this->open_file, 0, $this->position);
     $right = substr($this->open_file, $this->position + strlen($data));
     $this->open_file = $left . $data . $right;
@@ -65,10 +70,12 @@ class ArrayFileStream {
   }
 
   function stream_tell() {
+
     return $this->position;
   }
 
   function stream_eof() {
+
     return $this->position >= strlen($this->open_file);
   }
 
@@ -111,6 +118,7 @@ class ArrayFileStream {
   }
 
   function stream_stat() {
+
     return array('size' => is_array($this->open_file)
                            ? sizeof($this->open_file)
                            : strlen($this->open_file));
@@ -129,19 +137,28 @@ class ArrayFileStream {
   }
 
   function rename($path_from, $path_to) {
+
     throw new Exception('not implemented yet');
   }
 
   function mkdir($path, $mode, $options) {
+
     throw new Exception('not implemented yet');
   }
 
   function rmdir($path, $options) {
+
     throw new Exception('not implemented yet');
   }
 
   function dir_opendir($path, $options) {
-    throw new Exception('not implemented yet');
+    try {
+      $this->open_file =& self::get_file($path);
+    } catch (Exception $e) {
+      return FALSE;
+    }
+
+    return is_array($this->open_file);
   }
 
   function url_stat($path, $flags) {
@@ -156,7 +173,7 @@ class ArrayFileStream {
     $keys = array(
       'dev'     => 0,
       'ino'     => 0,
-      'mode'    => 33216, // chmod 700
+      'mode'    => is_array($file) ? 16832 : 33216, // chmod 700
       'nlink'   => 0,
       'uid'     => function_exists('posix_getuid') ? posix_getuid() : 0,
       'gid'     => function_exists('posix_getgid') ? posix_getgid() : 0,
@@ -173,15 +190,25 @@ class ArrayFileStream {
   }
 
   function dir_readdir() {
-    throw new Exception('not implemented yet');
+    if (!is_array($this->open_file)) {
+      return FALSE;
+    }
+    $result = key($this->open_file);
+    if ($result === NULL) {
+      return FALSE;
+    }
+    next($this->open_file);
+    return $result;
   }
 
   function dir_rewinddir() {
+
     throw new Exception('not implemented yet');
   }
 
   function dir_closedir() {
-    throw new Exception('not implemented yet');
+    reset($this->open_file);
+    unset($this->open_file);
   }
 }
 

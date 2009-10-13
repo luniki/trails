@@ -246,7 +246,7 @@ class Trails_Controller {
   function render_action($action) {
     $class = get_class($this);
     $controller_name =
-      Trails_Inflector::underscore(substr($class, 0, strlen($class) - 10));
+      Trails_Inflector::underscore(substr($class, 0, -10));
 
     $this->render_template($controller_name.'/'.$action, $this->layout);
   }

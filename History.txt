@@ -1,0 +1,23 @@
+== 0.6.2 2009-10-14
+
+This release has some minor changes to Trails_Controller#url_for and Trails_Controller#redirect and lots of new tests.
+
+=== New Features
+* add optional arguments to Trails_Controller#url_for which are urlencoded and then concatenated
+* lots of new unit tests
+* added Trails_Flash#__toString for easier debugging
+* extracted call to header() in Trails_Response to enable developers to override this
+* added rake tasks to build, compile and get code coverage statistics
+* add Trails_Controller#get_response
+* use flexi templates v0.4.0
+
+=== Bugfixes
+* do not add Trails_Dispatcher#trails_uri to server relative paths in Trails_Controller#redirect
+
+=== Removed features
+* Trails_Controller does not send HTML containing a "<meta>" tag anymore
+
+=== Changed features
+* Trails error handler resides now in the Trails_Dispatcher instead of the Trails_Exception superclass
+* Trails_Dispatcher#clean_uri was renamed to Trails_Dispatcher#clean_request_uri
+

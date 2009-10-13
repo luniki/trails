@@ -203,11 +203,7 @@ class Trails_Controller {
            ? $to
            : $this->url_for($to);
 
-    # redirect
-    $this->response
-      ->add_header('Location', $url)
-      ->set_body(sprintf('<html><head><meta http-equiv="refresh" content="0;'.
-                         'url=%s"/></head></html>', htmlentities($url)));
+    $this->response->add_header('Location', $url)->set_status(302);
   }
 
 

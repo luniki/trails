@@ -263,13 +263,10 @@ class Trails_Controller {
   function render_template($template_name, $layout = NULL) {
 
     # open template
-    $factory =
-      new Flexi_TemplateFactory($this->dispatcher->trails_root . '/views/');
+    $factory = new Flexi_TemplateFactory($this->dispatcher->trails_root .
+                                         '/views/');
 
     $template = $factory->open($template_name);
-    if (is_null($template)) {
-      throw new Trails_MissingFile("No such template: '$template_name'");
-    }
 
     # template requires setup ?
     switch (get_class($template)) {
@@ -403,15 +400,7 @@ class Trails_Controller {
    * @return object     a response object
    */
   function rescue($exception) {
-
-    # erase former response
-    if ($this->performed) {
-      $this->erase_response();
-    }
-
-    $this->response = $this->dispatcher->trails_error($exception);
-
-    return $this->response;
+    return ($this->response = $this->dispatcher->trails_error($exception));
   }
 }
 

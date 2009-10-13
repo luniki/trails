@@ -29,8 +29,10 @@ require_once 'simpletest/mock_objects.php';
 
 require_once 'varstream.php';
 
+$project_path = dirname(dirname(__FILE__));
+$lib_path = $project_path . '/lib/src/';
+
 # load required files
-$lib_path = dirname(__FILE__) . '/../lib/src/';
 require_once $lib_path . 'dispatcher.php';
 require_once $lib_path . 'response.php';
 require_once $lib_path . 'controller.php';
@@ -38,6 +40,10 @@ require_once $lib_path . 'inflector.php';
 require_once $lib_path . 'flash.php';
 require_once $lib_path . 'exception.php';
 
+# load flexi lib
+require_once $project_path . '/vendor/flexi/flexi.php';
+
+# load all mocks
 require_once 'lib/mocks.php';
 
 # collect all tests

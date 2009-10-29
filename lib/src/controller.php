@@ -400,7 +400,7 @@ class Trails_Controller {
    * @return object     a response object
    */
   function rescue($exception) {
-    return ($this->response = $this->dispatcher->trails_error($exception));
+    return $this->dispatcher->trails_error($exception);
   }
 }
 

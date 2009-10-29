@@ -84,8 +84,8 @@ class Trails_Dispatcher {
    */
   function dispatch($uri) {
 
-    $old_handler =
-      set_error_handler(array($this, 'error_handler'), E_ALL);
+    # E_USER_ERROR|E_USER_WARNING|E_USER_NOTICE|E_RECOVERABLE_ERROR = 5888
+    $old_handler = set_error_handler(array($this, 'error_handler'), 5888);
 
     ob_start();
     $level = ob_get_level();
@@ -245,23 +245,21 @@ class Trails_Dispatcher {
 
 
   /**
-   * <MethodDescription>
-   * # TODO (mlunzena) add description
+   * This method transforms E_USER_* and E_RECOVERABLE_ERROR to
+   * Trails_Exceptions.
    *
-   * @param  type       <description>
+   * @param  integer    the level of the error raised
+   * @param  string     the error message
+   * @param  string     the filename that the error was raised in
+   * @param  integer    the line number the error was raised at
+   * @param  array      an array of every variable that existed in the scope the
+   *                    error was triggered in
    *
-   * @return type       <description>
+   * @throws Trails_Exception
+   *
+   * @return void
    */
   function error_handler($errno, $string, $file, $line, $context) {
-
-    if (!($errno & error_reporting())) {
-      return;
-    }
-
-    if ($errno == E_NOTICE || $errno == E_WARNING || $errno == E_STRICT) {
-      return FALSE;
-    }
-
     $e = new Trails_Exception(500, $string);
     $e->line = $line;
     $e->file = $file;

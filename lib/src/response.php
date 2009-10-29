@@ -149,7 +149,7 @@ class Trails_Response {
    *
    * @param  string     the HTTP header
    * @param  bool       optional; TRUE if previously sent header should be
-   *                    replaced – FALSE otherwise (default)
+   *                    replaced - FALSE otherwise (default)
    * @param  integer    optional; the HTTP response code
    *
    * @return void

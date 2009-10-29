@@ -1,3 +1,12 @@
+== 0.6.3 2009-10-29
+
+This release contains mostly bug fixes.
+
+=== Bugfixes
+* Trails_Controller#rescue should not set Trails_Controller->response
+* custom error_handler moved to Trails_Dispatcher
+* Trails_Dispatcher#parse splits correctly on trailing slashes
+
 == 0.6.2 2009-10-14
 
 This release has some minor changes to Trails_Controller#url_for and Trails_Controller#redirect and lots of new tests.

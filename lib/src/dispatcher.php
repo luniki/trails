@@ -194,7 +194,6 @@ class Trails_Dispatcher {
    * @return type       <description>
    */
   function parse($unconsumed, $controller = NULL) {
-
     list($head, $tail) = $this->split_on_first_slash($unconsumed);
 
     if (!preg_match('/^\w+$/', $head)) {
@@ -214,11 +213,8 @@ class Trails_Dispatcher {
   }
 
   function split_on_first_slash($str) {
-    $pos = strpos($str, '/');
-    if ($pos !== FALSE) {
-      return array(substr($str, 0, $pos), substr($str, $pos + 1));
-    }
-    return array($str, '');
+    preg_match(":([^/]*)(/+)?(.*):", $str, $matches);
+    return array($matches[1], $matches[3]);
   }
 
   function file_exists($path) {

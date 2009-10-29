@@ -72,6 +72,8 @@ class RouterTestCase extends UnitTestCase {
   function test_parse() {
     $paths = array(
       'bar'                 => array('bar', ''),
+      'bar/'                => array('bar', ''),
+      'bar//'               => array('bar', ''),
       'bar/show'            => array('bar', 'show'),
       'bar/show/1/2'        => array('bar', 'show/1/2'),
       'bar/show///1///2'    => array('bar', 'show///1///2'),
@@ -80,7 +82,10 @@ class RouterTestCase extends UnitTestCase {
     );
 
     foreach ($paths as $path => $expected) {
-        $this->assertEqual($expected, $this->dispatcher->parse($path));
+        $parsed = $this->dispatcher->parse($path);
+        $this->assertSame($expected, $parsed,
+                          "Not the same: " . json_encode($expected) . ' ' .
+                                             json_encode($parsed));
     }
   }
 }

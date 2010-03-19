@@ -1,514 +1,564 @@
-<html>
-<head>
-<title>Docs For Class Trails_Dispatcher</title>
-<link rel="stylesheet" type="text/css" href="../media/style.css">
-</head>
-<body>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Trails_Dispatcher</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name"><img src="../media/images/Class_logo.png"
+														alt=" Class"
+														title=" Class"
+														style="vertical-align: middle"> Trails_Dispatcher</h2>
 
-<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
-  <tr>
-    <td class="header_top">trails</td>
-  </tr>
-  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
-  <tr>
-    <td class="header_menu">
-        
-                                    
-                              		  [ <a href="../classtrees_trails.html" class="menu">class tree: trails</a> ]
-		  [ <a href="../elementindex_trails.html" class="menu">index: trails</a> ]
-		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
-    </td>
-  </tr>
-  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
-</table>
-
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr valign="top">
-    <td width="200" class="menu">
-      <b>Packages:</b><br />
-              <a href="../li_trails.html">trails</a><br />
-            <br /><br />
-                        <b>Files:</b><br />
-      	  <div class="package">
-			<a href="../trails/_trails-unabridged.php.html">		trails-unabridged.php
-		</a><br>
-			<a href="../trails/_trails.php.html">		trails.php
-		</a><br>
-			<a href="../trails/_extras---tramp.php.html">		tramp.php
-		</a><br>
-	  </div><br />
-      
-      
-            <b>Classes:</b><br />
-        <div class="package">
-		    		<a href="../trails/Trails_Controller.html">Trails_Controller</a><br />
-	    		<a href="../trails/Trails_Dispatcher.html">Trails_Dispatcher</a><br />
-	    		<a href="../trails/Trails_Exception.html">Trails_Exception</a><br />
-	    		<a href="../trails/Trails_Flash.html">Trails_Flash</a><br />
-	    		<a href="../trails/Trails_Inflector.html">Trails_Inflector</a><br />
-	    		<a href="../trails/Trails_Response.html">Trails_Response</a><br />
-	    		<a href="../trails/Tramp_Controller.html">Tramp_Controller</a><br />
-	  </div>
-                </td>
-    <td>
-      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
-
-<h1>Class: Trails_Dispatcher</h1>
-Source Location: /trails-unabridged.php<br /><br />
-
-
-<table width="100%" border="0">
-<tr><td valign="top">
-
-<h3><a href="#class_details">Class Overview</a></h3>
-<pre></pre><br />
-<div class="description">The Dispatcher is used to map an incoming HTTP request to a Controller  producing a response which is then rendered. To initialize an instance of  class Trails_Dispatcher you have to give three configuration settings:</div><br /><br />
-<h4>Author(s):</h4>
-<ul>
-          <li>mlunzena</li>
-                  </ul>
-
-
-
-
-        
-          
-  
-<h4>Version:</h4>
-<ul>
-  <li>$Id: trails.php 7001 2008-04-04 11:20:27Z mlunzena $</li>
-</ul>
-
-<h4>Copyright:</h4>
-<ul>
-  <li>(c) Authors</li>
-</ul>
-        
-</td>
-
-<td valign="top">
-<h3><a href="#class_vars">Variables</a></h3>
-<ul>
-    <li><a href="../trails/Trails_Dispatcher.html#var$default_controller">$default_controller</a></li>
-    <li><a href="../trails/Trails_Dispatcher.html#var$trails_root">$trails_root</a></li>
-    <li><a href="../trails/Trails_Dispatcher.html#var$trails_uri">$trails_uri</a></li>
-  </ul>
-</td>
-
-
-<td valign="top">
-<h3><a href="#class_methods">Methods</a></h3>
-<ul>
-    <li><a href="../trails/Trails_Dispatcher.html#method__construct">__construct</a></li>
-    <li><a href="../trails/Trails_Dispatcher.html#methodclean_uri">clean_uri</a></li>
-    <li><a href="../trails/Trails_Dispatcher.html#methoddispatch">dispatch</a></li>
-    <li><a href="../trails/Trails_Dispatcher.html#methodfile_exists">file_exists</a></li>
-    <li><a href="../trails/Trails_Dispatcher.html#methodload_controller">load_controller</a></li>
-    <li><a href="../trails/Trails_Dispatcher.html#methodmap_uri_to_response">map_uri_to_response</a></li>
-    <li><a href="../trails/Trails_Dispatcher.html#methodparse">parse</a></li>
-    <li><a href="../trails/Trails_Dispatcher.html#methodsplit_on_first_slash">split_on_first_slash</a></li>
-  </ul>
-</td>
-
-</tr></table>
-<hr />
-
-<table width="100%" border="0"><tr>
-
-
-
-
-
-
-</tr></table>
-<hr />
-
-<a name="class_details"></a>
-<h3>Class Details</h3>
-<div class="tags">
-[line <a href="../__filesource/fsource_trails__trails-unabridged.php.html#a52">52</a>]<br />
-The Dispatcher is used to map an incoming HTTP request to a Controller  producing a response which is then rendered. To initialize an instance of  class Trails_Dispatcher you have to give three configuration settings:<br /><br /><p>trails_root - the absolute file path to a directory containing the                         applications controllers, views etc.            trails_uri - the URI to which routes to mapped Controller/Actions                         are appended    default_controller - the route to a controller, that is used if no                         controller is given, that is the route is equal to '/'</p><p>After instantiation of a dispatcher you have to call method #dispatch with  the request uri to be mapped to a controller/action pair.</p><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>author:</b>&nbsp;&nbsp;</td><td>mlunzena</td>
-  </tr>
-  <tr>
-    <td><b>version:</b>&nbsp;&nbsp;</td><td>$Id: trails.php 7001 2008-04-04 11:20:27Z mlunzena $</td>
-  </tr>
-  <tr>
-    <td><b>copyright:</b>&nbsp;&nbsp;</td><td>(c) Authors</td>
-  </tr>
-</table>
-</div>
-</div><br /><br />
-<div class="top">[ <a href="#top">Top</a> ]</div><br />
-
-<hr />
-<a name="class_vars"></a>
-<h3>Class Variables</h3>
-<div class="tags">
-	<a name="var$default_controller"></a>
-	<p></p>
-	<h4>$default_controller = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_trails__trails-unabridged.php.html#a80">80</a>]</p>
-  This variable contains the route to the default controller.<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">The Dispatcher is used to map an incoming HTTP request to a Controller  producing a response which is then rendered. To initialize an instance of  class Trails_Dispatcher you have to give three configuration settings:</p>
+<p class="description"><p>trails_root - the absolute file path to a directory containing the                         applications controllers, views etc.            trails_uri - the URI to which routes to mapped Controller/Actions                         are appended    default_controller - the route to a controller, that is used if no                         controller is given, that is the route is equal to '/'</p><p>After instantiation of a dispatcher you have to call method #dispatch with  the request uri to be mapped to a controller/action pair.</p></p>
+	<ul class="tags">
+				<li><span class="field">author:</span> mlunzena</li>
+				<li><span class="field">version:</span> $Id: trails.php 7001 2008-04-04 11:20:27Z mlunzena $</li>
+				<li><span class="field">copyright:</span> (c) Authors</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_trails-unabridged.php.html">/trails-unabridged.php</a> (line <span class="field"><a href="../__filesource/fsource_trails__trails-unabridged.php.html#a54">54</a></span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
 </div>
 
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>string</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$trails_root"></a>
-	<p></p>
-	<h4>$trails_root = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_trails__trails-unabridged.php.html#a62">62</a>]</p>
-  This is the absolute file path to the trails application directory.<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
+
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+																																								<div class="var-title">
+					<img src="../media/images/Variable.png" alt=" " />
+					<span class="var-type">string</span>
+					<a href="#$default_controller" title="details" class="var-name">$default_controller</a>
+				</div>
+																<div class="var-title">
+					<img src="../media/images/Variable.png" alt=" " />
+					<span class="var-type">string</span>
+					<a href="#$trails_root" title="details" class="var-name">$trails_root</a>
+				</div>
+																<div class="var-title">
+					<img src="../media/images/Variable.png" alt=" " />
+					<span class="var-type">string</span>
+					<a href="#$trails_uri" title="details" class="var-name">$trails_uri</a>
+				</div>
+											</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																		<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																																<div class="method-definition">
+					<img src="../media/images/Constructor.png" alt=" "/>
+											<span class="method-result">void</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$trails_root</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$trails_uri</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$default_controller</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">string</span>
+										<a href="#clean_request_uri" title="details" class="method-name">clean_request_uri</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$uri</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">void</span>
+										<a href="#dispatch" title="details" class="method-name">dispatch</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$uri</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">void</span>
+										<a href="#error_handler" title="details" class="method-name">error_handler</a>
+											(<span class="var-type">integer</span>&nbsp;<span class="var-name">$errno</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$string</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$file</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$line</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$context</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">void</span>
+										<a href="#file_exists" title="details" class="method-name">file_exists</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$path</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">TrailsController</span>
+										<a href="#load_controller" title="details" class="method-name">load_controller</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$controller</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">mixed</span>
+										<a href="#map_uri_to_response" title="details" class="method-name">map_uri_to_response</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$uri</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">type</span>
+										<a href="#parse" title="details" class="method-name">parse</a>
+											(<span class="var-type">type</span>&nbsp;<span class="var-name">$unconsumed</span>, [<span class="var-type">type</span>&nbsp;<span class="var-name">$controller</span> = <span class="var-default">NULL</span>])
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">void</span>
+										<a href="#split_on_first_slash" title="details" class="method-name">split_on_first_slash</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$str</span>)
+									</div>
+																<div class="method-definition">
+					<img src="../media/images/Method.png" alt=" "/>
+											<span class="method-result">void</span>
+										<a href="#trails_error" title="details" class="method-name">trails_error</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$exception</span>)
+									</div>
+											</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			
+<a name="var$default_controller" id="$default_controller"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<img src="../media/images/Variable.png" />
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$default_controller</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_trails__trails-unabridged.php.html#a82">82</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This variable contains the route to the default controller.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
 </div>
+<a name="var$trails_root" id="$trails_root"><!-- --></A>
+<div class="evenrow">
 
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>string</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="var$trails_uri"></a>
-	<p></p>
-	<h4>$trails_uri = <span class="value"></span></h4>
-	<p>[line <a href="../__filesource/fsource_trails__trails-unabridged.php.html#a71">71</a>]</p>
-  This is the URI to which routes to controller/actions are appended.<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
+	<div class="var-header">
+		<img src="../media/images/Variable.png" />
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$trails_root</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_trails__trails-unabridged.php.html#a64">64</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This is the absolute file path to the trails application directory.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
 </div>
+<a name="var$trails_uri" id="$trails_uri"><!-- --></A>
+<div class="oddrow">
 
-  <br />
-	<div class="tags">
-  <table border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td><b>Type:</b>&nbsp;&nbsp;</td>
-      <td>string</td>
-    </tr>
-      </table>
-	</div><br /><br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-</div><br />
+	<div class="var-header">
+		<img src="../media/images/Variable.png" />
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$trails_uri</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_trails__trails-unabridged.php.html#a73">73</a></span>)
+		</span>
+	</div>
 
-<hr />
-<a name="class_methods"></a>
-<h3>Class Methods</h3>
-<div class="tags">
-
-  <hr />
-	<a name="method__construct"></a>
-	<h3>constructor __construct <span class="smalllinenumber">[line <a href="../__filesource/fsource_trails__trails-unabridged.php.html#a95">95</a>]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void __construct(
-string
-$trails_root, string
-$trails_uri, string
-$default_controller)</code>
-    </td></tr></table>
-    </td></tr></table><br />
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This is the URI to which routes to controller/actions are appended.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
 	
-		Constructor.<br /><br /><br /><br />
+	
+		
+		
 
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$trails_root</b>&nbsp;&nbsp;</td>
-        <td>absolute file path to a directory containing the                  applications controllers, views etc.</td>
-      </tr>
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$trails_uri</b>&nbsp;&nbsp;</td>
-        <td>the URI to which routes to mapped Controller/Actions                  are appended</td>
-      </tr>
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$default_controller</b>&nbsp;&nbsp;</td>
-        <td>the route to a controller, that is used if no                  controller is given, that is the route is equal to '/'</td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodclean_uri"></a>
-	<h3>method clean_uri <span class="smalllinenumber">[line <a href="../__filesource/fsource_trails__trails-unabridged.php.html#a195">195</a>]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>string clean_uri(
-string
-$uri)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Clean up URI string by removing the query part and leading slashes.<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>the cleaned string</td>
-  </tr>
-</table>
 </div>
-<br /><br />
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+														<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Constructor.png" />
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number"><a href="../__filesource/fsource_trails__trails-unabridged.php.html#a97">97</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Constructor.</p>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__construct
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$trails_root</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$trails_uri</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$default_controller</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$trails_root</span><span class="var-description">: absolute file path to a directory containing the                  applications controllers, views etc.</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$trails_uri</span><span class="var-description">: the URI to which routes to mapped Controller/Actions                  are appended</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$default_controller</span><span class="var-description">: the route to a controller, that is used if no                  controller is given, that is the route is equal to '/'</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodclean_request_uri" id="clean_request_uri"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">clean_request_uri</span> (line <span class="line-number"><a href="../__filesource/fsource_trails__trails-unabridged.php.html#a209">209</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Clean up URI string by removing the query part and leading slashes.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the cleaned string</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			clean_request_uri
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$uri</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$uri</span><span class="var-description">: an URI string</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddispatch" id="dispatch"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">dispatch</span> (line <span class="line-number"><a href="../__filesource/fsource_trails__trails-unabridged.php.html#a114">114</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Maps a string to a response which is then rendered.</p>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			dispatch
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$uri</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$uri</span><span class="var-description">: The requested URI.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoderror_handler" id="error_handler"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">error_handler</span> (line <span class="line-number"><a href="../__filesource/fsource_trails__trails-unabridged.php.html#a287">287</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">This method transforms E_USER_* and E_RECOVERABLE_ERROR to  Trails_Exceptions.</p>
+	<ul class="tags">
+				<li><span class="field">throws:</span> Trails_Exception</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			error_handler
+		</span>
+					(<span class="var-type">integer</span>&nbsp;<span class="var-name">$errno</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$string</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$file</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$line</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$context</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">$errno</span><span class="var-description">: the level of the error raised</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$string</span><span class="var-description">: the error message</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$file</span><span class="var-description">: the filename that the error was raised in</span>			</li>
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">$line</span><span class="var-description">: the line number the error was raised at</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$context</span><span class="var-description">: an array of every variable that existed in the scope the                     error was triggered in</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodfile_exists" id="file_exists"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">file_exists</span> (line <span class="line-number"><a href="../__filesource/fsource_trails__trails-unabridged.php.html#a249">249</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			file_exists
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$path</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$path</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodload_controller" id="load_controller"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">load_controller</span> (line <span class="line-number"><a href="../__filesource/fsource_trails__trails-unabridged.php.html#a262">262</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Loads the controller file for a given controller path and return an  instance of that controller. If an error occures, an exception will be  thrown.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> an instance of that controller</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">TrailsController</span>
+		<span class="method-name">
+			load_controller
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$controller</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$controller</span><span class="var-description">: the relative controller path</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodmap_uri_to_response" id="map_uri_to_response"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">map_uri_to_response</span> (line <span class="line-number"><a href="../__filesource/fsource_trails__trails-unabridged.php.html#a144">144</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Maps an URI to a response by figuring out first what controller to  instantiate, then delegating the unconsumed part of the URI to the  controller who returns an appropriate response object or throws a  Trails_Exception.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> a response object</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			map_uri_to_response
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$uri</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$uri</span><span class="var-description">: the URI string</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodparse" id="parse"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">parse</span> (line <span class="line-number"><a href="../__filesource/fsource_trails__trails-unabridged.php.html#a225">225</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">&lt;MethodDescription&gt;</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> &lt;description&gt;</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">type</span>
+		<span class="method-name">
+			parse
+		</span>
+					(<span class="var-type">type</span>&nbsp;<span class="var-name">$unconsumed</span>, [<span class="var-type">type</span>&nbsp;<span class="var-name">$controller</span> = <span class="var-default">NULL</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">type</span>
+				<span class="var-name">$unconsumed</span><span class="var-description">: &lt;description&gt;</span>			</li>
+					<li>
+				<span class="var-type">type</span>
+				<span class="var-name">$controller</span><span class="var-description">: &lt;description&gt;</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsplit_on_first_slash" id="split_on_first_slash"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">split_on_first_slash</span> (line <span class="line-number"><a href="../__filesource/fsource_trails__trails-unabridged.php.html#a244">244</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			split_on_first_slash
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$str</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$str</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodtrails_error" id="trails_error"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<img src="../media/images/Method.png" />
+		<span class="method-title">trails_error</span> (line <span class="line-number"><a href="../__filesource/fsource_trails__trails-unabridged.php.html#a174">174</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			trails_error
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$exception</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$exception</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
 
 	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$uri</b>&nbsp;&nbsp;</td>
-        <td>an URI string</td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methoddispatch"></a>
-	<h3>method dispatch <span class="smalllinenumber">[line <a href="../__filesource/fsource_trails__trails-unabridged.php.html#a112">112</a>]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void dispatch(
-string
-$uri)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Maps a string to a response which is then rendered.<br /><br /><br /><br />
-
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$uri</b>&nbsp;&nbsp;</td>
-        <td>The requested URI.</td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodfile_exists"></a>
-	<h3>method file_exists <span class="smalllinenumber">[line <a href="../__filesource/fsource_trails__trails-unabridged.php.html#a239">239</a>]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void file_exists(
-
-$path)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		<br /><br />
-
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">&nbsp;&nbsp;</td>
-        <td><b>$path</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodload_controller"></a>
-	<h3>method load_controller <span class="smalllinenumber">[line <a href="../__filesource/fsource_trails__trails-unabridged.php.html#a252">252</a>]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>mixed load_controller(
-string
-$controller)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Loads the controller file for a given controller path and returns the  class name of that controller. If an error occures, an exception will be  thrown.<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>the controller's class name</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$controller</b>&nbsp;&nbsp;</td>
-        <td>the relative controller path</td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodmap_uri_to_response"></a>
-	<h3>method map_uri_to_response <span class="smalllinenumber">[line <a href="../__filesource/fsource_trails__trails-unabridged.php.html#a143">143</a>]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>mixed map_uri_to_response(
-string
-$uri)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Maps an URI to a response by figuring out first what controller to  instantiate, then delegating the unconsumed part of the URI to the  controller who returns an appropriate response object or throws a  Trails_Exception.<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>a response object</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$uri</b>&nbsp;&nbsp;</td>
-        <td>the URI string</td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodparse"></a>
-	<h3>method parse <span class="smalllinenumber">[line <a href="../__filesource/fsource_trails__trails-unabridged.php.html#a211">211</a>]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>type parse(
-type
-$unconsumed, [type
-$controller = NULL])</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		&lt;MethodDescription&gt;<br /><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>return:</b>&nbsp;&nbsp;</td><td>&lt;description&gt;</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">type&nbsp;&nbsp;</td>
-        <td><b>$unconsumed</b>&nbsp;&nbsp;</td>
-        <td>&lt;description&gt;</td>
-      </tr>
-          <tr>
-        <td class="type">type&nbsp;&nbsp;</td>
-        <td><b>$controller</b>&nbsp;&nbsp;</td>
-        <td>&lt;description&gt;</td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodsplit_on_first_slash"></a>
-	<h3>method split_on_first_slash <span class="smalllinenumber">[line <a href="../__filesource/fsource_trails__trails-unabridged.php.html#a231">231</a>]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>void split_on_first_slash(
-
-$str)</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		<br /><br />
-
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">&nbsp;&nbsp;</td>
-        <td><b>$str</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-</div><br />
-
-
-        <div class="credit">
-		    <hr />
-		    Documentation generated on Thu, 08 Jan 2009 13:25:00 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.2</a>
-	      </div>
-      </td></tr></table>
-    </td>
-  </tr>
-</table>
-
-</body>
+	<p class="notes" id="credit">
+		Documentation generated on Fri, 19 Mar 2010 13:24:10 +0100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
 </html>

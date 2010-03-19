@@ -7,7 +7,7 @@ CLEAN.include('ndoc')
 
 desc 'Create documentation'
 file 'doc' => SRC do
-  sh "phpdoc --sourcecode on -t `pwd`/doc -d `pwd`/lib -ti 'trails documentation' -o 'HTML:frames:earthli'"
+  sh "phpdoc --sourcecode on -t `pwd`/doc -f `pwd`/lib/trails-unabridged.php -ti 'trails documentation' -o 'HTML:frames:earthli'"
 end
 
 desc 'Run all unit tests'

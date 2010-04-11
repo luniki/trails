@@ -7,7 +7,7 @@ CLEAN.include('ndoc')
 
 desc 'Create documentation'
 file 'doc' => SRC do
-  sh "phpdoc --sourcecode on -t `pwd`/doc -f `pwd`/lib/trails-unabridged.php -ti 'trails documentation' -o 'HTML:frames:earthli'"
+  sh "phpdoc --sourcecode on -t `pwd`/doc -f `pwd`/lib/trails.php -ti 'trails documentation' -o 'HTML:frames:earthli'"
 end
 
 desc 'Run all unit tests'
@@ -17,13 +17,13 @@ end
 
 desc 'Build release'
 task 'build' => 'compile' do
-  sh "php tools/shrink.php lib/trails-unabridged.php > lib/trails.php"
+  sh "php tools/shrink.php lib/trails.php > lib/trails-abridged.php"
   sh "wc lib/trails.php"
 end
 
 desc 'Compile release'
 task 'compile' do
-  sh "php lib/src/trails.php > lib/trails-unabridged.php"
+  sh "php lib/src/trails.php > lib/trails.php"
 end
 
 desc 'Run coverage'

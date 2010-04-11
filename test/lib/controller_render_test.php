@@ -142,5 +142,29 @@ class ControllerRenderTestCase extends UnitTestCase {
     $controller->render_action('index');
     $this->assertEqual($controller->get_response(), new Trails_Response('[foo/index]'));
   }
+
+  function test_respond_to_defaults_to_html() {
+    $dispatcher = new Trails_Dispatcher('var://app', 'trails_uri', 'default');
+    $controller = new FooController($dispatcher);
+    $response = $controller->perform('index');
+    $this->assertTrue($controller->respond_to('html'));
+  }
+
+  function test_respond_to_forced_to_html() {
+    $dispatcher = new Trails_Dispatcher('var://app', 'trails_uri', 'default');
+    $controller = new FooController($dispatcher);
+    $response = $controller->perform('index.html');
+    $this->assertTrue($controller->respond_to('html'),
+      "Controller does not respond to html but to {$controller->format}");
+  }
+
+  function test_respond_to_forced_to_xml() {
+    $dispatcher = new Trails_Dispatcher('var://app', 'trails_uri', 'default');
+    $controller = new FooController($dispatcher);
+    $response = $controller->perform('index.xml');
+    $this->assertFalse($controller->respond_to('html'));
+    $this->assertTrue($controller->respond_to('xml'),
+      "Controller does not respond to xml but to {$controller->format}");
+  }
 }
 

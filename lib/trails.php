@@ -24,7 +24,7 @@
 /**
  * The version of the trails library.
  */
-define('TRAILS_VERSION', '0.6.4');
+define('TRAILS_VERSION', '0.6.5');
 
 
 
@@ -175,7 +175,7 @@ class Trails_Dispatcher {
     ob_clean();
 
     # show details for local requests
-    $detailed = $_SERVER['REMOTE_ADDR'] === '127.0.0.1';
+    $detailed = @$_SERVER['REMOTE_ADDR'] === '127.0.0.1';
 
     $body = sprintf('<html><head><title>Trails Error</title></head>'.
                     '<body><h1>%s</h1><pre>%s</pre></body></html>',
@@ -285,10 +285,7 @@ class Trails_Dispatcher {
    * @return void
    */
   function error_handler($errno, $string, $file, $line, $context) {
-    $e = new Trails_Exception(500, $string);
-    $e->line = $line;
-    $e->file = $file;
-    throw $e;
+    throw new Trails_Exception(500, $string);
   }
 }
 
@@ -1178,11 +1175,11 @@ class Trails_Exception extends Exception {
 
 
   /**
-   * <MethodDescription>
+   * @param  int     the status code to be set in the response
+   * @param  string  a human readable presentation of the status code
+   * @param  array   a hash of additional headers to be set in the response
    *
-   * @param  type       <description>
-   *
-   * @return type       <description>
+   * @return void
    */
   function __construct($status = 500, $reason = NULL, $headers = array()) {
     if ($reason === NULL) {

@@ -22,11 +22,11 @@ class Trails_Exception extends Exception {
 
 
   /**
-   * <MethodDescription>
+   * @param  int     the status code to be set in the response
+   * @param  string  a human readable presentation of the status code
+   * @param  array   a hash of additional headers to be set in the response
    *
-   * @param  type       <description>
-   *
-   * @return type       <description>
+   * @return void
    */
   function __construct($status = 500, $reason = NULL, $headers = array()) {
     if ($reason === NULL) {

@@ -38,7 +38,7 @@ class DispatcherTestCase extends UnitTestCase {
     ArrayFileStream::set_filesystem(array(
       'app' => array(
         'controllers' => array(
-          'foo.php' => '<?',
+          'foo.php' => '<?'
         ),
       ),
     ));
@@ -57,7 +57,7 @@ class DispatcherTestCase extends UnitTestCase {
     $this->dispatcher->expectOnce('load_controller', array('foo'));
     $this->dispatcher->setReturnValue('load_controller', $controller);
     $this->dispatcher->expectOnce('parse');
-    $this->dispatcher->setReturnValue('parse', array('foo'));
+    $this->dispatcher->setReturnValue('parse', array('foo', ''));
 
     $result = $this->dispatcher->dispatch("/foo");
   }
@@ -77,3 +77,4 @@ class DispatcherTestCase extends UnitTestCase {
     $dispatcher->dispatch("");
   }
 }
+

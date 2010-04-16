@@ -1,3 +1,8 @@
+== 0.6.5 2010-04-16
+
+=== Bugfixes
+* Exception#file and #line are protected and cannot be set from a dispatcher. Just remove this, as the backtrace will have this information anyway.
+
 == 0.6.4 2010-04-11
 
 There are two versions of trails: an unabridged and an abridged. From this

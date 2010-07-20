@@ -21,14 +21,14 @@
 # SOFTWARE.
 
 Mock::generatePartial('Trails_Dispatcher', 'PartialMockDispatcher',
-                      array('load_controller', 'parse', 'trails_error'));
+                      array('loadController', 'parse', 'trailsError'));
 
 Mock::generatePartial('Trails_Controller', 'RescueController',
-                      array('index_action', 'rescue'));
+                      array('indexAction', 'rescue'));
 
 Mock::generatePartial('Trails_Controller', 'FilteringController',
-                      array('before_filter', 'action_filter'));
+                      array('beforeFilter', 'actionFilter'));
 
 Mock::generatePartial('Trails_Response', 'PartialMockResponse',
-                      array('send_header'));
+                      array('sendHeader'));
 

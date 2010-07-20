@@ -41,12 +41,12 @@ class Trails_Response {
   function __construct($body = '', $headers = array(),
                        $status = NULL, $reason = NULL) {
 
-    $this->set_body($body);
+    $this->setBody($body);
 
     $this->headers = $headers;
 
     if (isset($status)) {
-      $this->set_status($status, $reason);
+      $this->setStatus($status, $reason);
     }
   }
 
@@ -58,7 +58,7 @@ class Trails_Response {
    *
    * @return mixed   this response object. Useful for cascading method calls.
    */
-  function set_body($body) {
+  function setBody($body) {
     $this->body = $body;
     return $this;
   }
@@ -73,9 +73,9 @@ class Trails_Response {
    *
    * @return mixed    this response object. Useful for cascading method calls.
    */
-  function set_status($status, $reason = NULL) {
+  function setStatus($status, $reason = NULL) {
     $this->status = $status;
-    $this->reason = isset($reason) ? $reason : $this->get_reason($status);
+    $this->reason = isset($reason) ? $reason : $this->getReason($status);
     return $this;
   }
 
@@ -87,7 +87,7 @@ class Trails_Response {
    *
    * @return string  the reason phrase for this response's status
    */
-  function get_reason($status) {
+  function getReason($status) {
     $reason = array(
       100 => 'Continue', 'Switching Protocols',
       200 => 'OK', 'Created', 'Accepted', 'Non-Authoritative Information',
@@ -117,7 +117,7 @@ class Trails_Response {
    *
    * @return mixed   this response object. Useful for cascading method calls.
    */
-  function add_header($key, $value) {
+  function addHeader($key, $value) {
     $this->headers[$key] = $value;
     return $this;
   }
@@ -130,14 +130,14 @@ class Trails_Response {
    */
   function output() {
     if (isset($this->status)) {
-      $this->send_header(sprintf('HTTP/1.1 %d %s',
+      $this->sendHeader(sprintf('HTTP/1.1 %d %s',
                                  $this->status, $this->reason),
                          TRUE,
                          $this->status);
     }
 
     foreach ($this->headers as $k => $v) {
-      $this->send_header("$k: $v");
+      $this->sendHeader("$k: $v");
     }
 
     echo $this->body;
@@ -154,7 +154,7 @@ class Trails_Response {
    *
    * @return void
    */
-  function send_header($header, $replace = FALSE, $status = NULL) {
+  function sendHeader($header, $replace = FALSE, $status = NULL) {
     if (isset($status)) {
       header($header, $replace, $status);
     }

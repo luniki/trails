@@ -24,7 +24,7 @@
 /**
  * The version of the trails library.
  */
-define('TRAILS_VERSION', '0.6.5');
+define('TRAILS_VERSION', '0.7.0');
 
 
 
@@ -119,7 +119,7 @@ class Trails_Dispatcher {
     ob_start();
     $level = ob_get_level();
 
-    $this->map_uri_to_response($this->clean_request_uri((string) $uri))->output();
+    $this->mapUriToResponse($this->cleanRequestUri((string) $uri))->output();
 
     while (ob_get_level() >= $level) {
       ob_end_flush();
@@ -141,12 +141,12 @@ class Trails_Dispatcher {
    *
    * @return mixed   a response object
    */
-  function map_uri_to_response($uri) {
+  function mapUriToResponse($uri) {
 
     try {
 
       if ('' === $uri) {
-        if (!$this->file_exists($this->default_controller . '.php')) {
+        if (!$this->fileExists($this->default_controller . '.php')) {
           throw new Trails_MissingFile(
             "Default controller '{$this->default_controller}' not found'");
         }
@@ -158,20 +158,20 @@ class Trails_Dispatcher {
         list($controller_path, $unconsumed) = $this->parse($uri);
       }
 
-      $controller = $this->load_controller($controller_path);
+      $controller = $this->loadController($controller_path);
 
       $response = $controller->perform($unconsumed);
 
     } catch (Exception $e) {
 
       $response = isset($controller) ? $controller->rescue($e)
-                                     : $this->trails_error($e);
+                                     : $this->trailsError($e);
     }
 
     return $response;
   }
 
-  function trails_error($exception) {
+  function trailsError($exception) {
     ob_clean();
 
     # show details for local requests
@@ -206,7 +206,7 @@ class Trails_Dispatcher {
    *
    * @return string  the cleaned string
    */
-  function clean_request_uri($uri) {
+  function cleanRequestUri($uri) {
     if (FALSE !== ($pos = strpos($uri, '?'))) {
       $uri = substr($uri, 0, $pos);
     }
@@ -223,7 +223,7 @@ class Trails_Dispatcher {
    * @return type       <description>
    */
   function parse($unconsumed, $controller = NULL) {
-    list($head, $tail) = $this->split_on_first_slash($unconsumed);
+    list($head, $tail) = $this->splitOnFirstSlash($unconsumed);
 
     if (!preg_match('/^\w+$/', $head)) {
       throw new Trails_RoutingError("No route matches '$head'");
@@ -231,22 +231,22 @@ class Trails_Dispatcher {
 
     $controller = (isset($controller) ? $controller . '/' : '') . $head;
 
-    if ($this->file_exists($controller . '.php')) {
+    if ($this->fileExists($controller . '.php')) {
       return array($controller, $tail);
     }
-    else if ($this->file_exists($controller)) {
+    else if ($this->fileExists($controller)) {
       return $this->parse($tail, $controller);
     }
 
     throw new Trails_RoutingError("No route matches '$head'");
   }
 
-  function split_on_first_slash($str) {
+  function splitOnFirstSlash($str) {
     preg_match(":([^/]*)(/+)?(.*):", $str, $matches);
     return array($matches[1], $matches[3]);
   }
 
-  function file_exists($path) {
+  function fileExists($path) {
     return file_exists("{$this->trails_root}/controllers/$path");
   }
 
@@ -259,7 +259,7 @@ class Trails_Dispatcher {
    *
    * @return TrailsController  an instance of that controller
    */
-  function load_controller($controller) {
+  function loadController($controller) {
     require_once "{$this->trails_root}/controllers/{$controller}.php";
     $class = Trails_Inflector::camelize($controller) . 'Controller';
     if (!class_exists($class)) {
@@ -332,12 +332,12 @@ class Trails_Response {
   function __construct($body = '', $headers = array(),
                        $status = NULL, $reason = NULL) {
 
-    $this->set_body($body);
+    $this->setBody($body);
 
     $this->headers = $headers;
 
     if (isset($status)) {
-      $this->set_status($status, $reason);
+      $this->setStatus($status, $reason);
     }
   }
 
@@ -349,7 +349,7 @@ class Trails_Response {
    *
    * @return mixed   this response object. Useful for cascading method calls.
    */
-  function set_body($body) {
+  function setBody($body) {
     $this->body = $body;
     return $this;
   }
@@ -364,9 +364,9 @@ class Trails_Response {
    *
    * @return mixed    this response object. Useful for cascading method calls.
    */
-  function set_status($status, $reason = NULL) {
+  function setStatus($status, $reason = NULL) {
     $this->status = $status;
-    $this->reason = isset($reason) ? $reason : $this->get_reason($status);
+    $this->reason = isset($reason) ? $reason : $this->getReason($status);
     return $this;
   }
 
@@ -378,7 +378,7 @@ class Trails_Response {
    *
    * @return string  the reason phrase for this response's status
    */
-  function get_reason($status) {
+  function getReason($status) {
     $reason = array(
       100 => 'Continue', 'Switching Protocols',
       200 => 'OK', 'Created', 'Accepted', 'Non-Authoritative Information',
@@ -408,7 +408,7 @@ class Trails_Response {
    *
    * @return mixed   this response object. Useful for cascading method calls.
    */
-  function add_header($key, $value) {
+  function addHeader($key, $value) {
     $this->headers[$key] = $value;
     return $this;
   }
@@ -421,14 +421,14 @@ class Trails_Response {
    */
   function output() {
     if (isset($this->status)) {
-      $this->send_header(sprintf('HTTP/1.1 %d %s',
+      $this->sendHeader(sprintf('HTTP/1.1 %d %s',
                                  $this->status, $this->reason),
                          TRUE,
                          $this->status);
     }
 
     foreach ($this->headers as $k => $v) {
-      $this->send_header("$k: $v");
+      $this->sendHeader("$k: $v");
     }
 
     echo $this->body;
@@ -445,7 +445,7 @@ class Trails_Response {
    *
    * @return void
    */
-  function send_header($header, $replace = FALSE, $status = NULL) {
+  function sendHeader($header, $replace = FALSE, $status = NULL) {
     if (isset($status)) {
       header($header, $replace, $status);
     }
@@ -461,13 +461,13 @@ class Trails_Response {
  * A Trails_Controller is responsible for matching the unconsumed part of an URI
  * to an action using the left over words as arguments for that action. The
  * action is then mapped to method of the controller instance which is called
- * with the just mentioned arguments. That method can send the #render_action,
- * #render_template, #render_text, #render_nothing or #redirect method.
- * Otherwise the #render_action is called with the current action as argument.
+ * with the just mentioned arguments. That method can send the #renderAction,
+ * #renderTemplate, #renderText, #renderNothing or #redirect method.
+ * Otherwise the #renderAction is called with the current action as argument.
  * If the action method sets instance variables during performing, they will be
- * be used as attributes for the flexi-template opened by #render_action or
- * #render_template. A controller's response's body is populated with the output
- * of the #render_* methods. The action methods can add additional headers or
+ * be used as attributes for the flexi-template opened by #renderAction or
+ * #renderTemplate. A controller's response's body is populated with the output
+ * of the #render* methods. The action methods can add additional headers or
  * change the status of that response.
  *
  * @package   trails
@@ -499,7 +499,7 @@ class Trails_Controller {
    */
   function __construct($dispatcher) {
     $this->dispatcher = $dispatcher;
-    $this->erase_response();
+    $this->eraseResponse();
   }
 
 
@@ -508,7 +508,7 @@ class Trails_Controller {
    *
    * @return void
    */
-  function erase_response() {
+  function eraseResponse() {
     $this->performed = FALSE;
     $this->response = new Trails_Response();
   }
@@ -519,7 +519,7 @@ class Trails_Controller {
    *
    * @return mixed  the controller's response
    */
-  function get_response() {
+  function getResponse() {
     return $this->response;
   }
 
@@ -536,31 +536,31 @@ class Trails_Controller {
    */
   function perform($unconsumed) {
 
-    list($action, $args) = $this->extract_action_and_args($unconsumed);
+    list($action, $args) = $this->extractActionAndArgs($unconsumed);
 
     # call before filter
-    $before_filter_result = $this->before_filter($action, $args);
+    $before_filter_result = $this->beforeFilter($action, $args);
 
     # send action to controller
     # TODO (mlunzena) shouldn't the after filter be triggered too?
     if (!(FALSE === $before_filter_result || $this->performed)) {
 
-      $mapped_action = $this->map_action($action);
+      $mapped_action = $this->mapAction($action);
 
       # is action callable?
       if (method_exists($this, $mapped_action)) {
         call_user_func_array(array(&$this, $mapped_action), $args);
       }
       else {
-        $this->does_not_understand($action, $args);
+        $this->doesNotUnderstand($action, $args);
       }
 
       if (!$this->performed) {
-        $this->render_action($action);
+        $this->renderAction($action);
       }
 
       # call after filter
-      $this->after_filter($action, $args);
+      $this->afterFilter($action, $args);
     }
 
     return $this->response;
@@ -575,7 +575,7 @@ class Trails_Controller {
    * @return array        an array with two elements - a string containing the
    *                      action and an array of strings representing the args
    */
-  function extract_action_and_args($string) {
+  function extractActionAndArgs($string) {
 
     if ('' === $string) {
       return array('index', array());
@@ -594,8 +594,8 @@ class Trails_Controller {
    *
    * @return string  the mapped method name
    */
-  function map_action($action) {
-    return $action . '_action';
+  function mapAction($action) {
+    return Trails_Inflector::camelize($action) . 'Action';
   }
 
 
@@ -611,7 +611,7 @@ class Trails_Controller {
    *
    * @return bool
    */
-  function before_filter(&$action, &$args) {
+  function beforeFilter(&$action, &$args) {
   }
 
 
@@ -623,7 +623,7 @@ class Trails_Controller {
    *
    * @return void
    */
-  function after_filter($action, $args) {
+  function afterFilter($action, $args) {
   }
 
 
@@ -635,7 +635,7 @@ class Trails_Controller {
    *
    * @return void
    */
-  function does_not_understand($action, $args) {
+  function doesNotUnderstand($action, $args) {
     throw new Trails_UnknownAction("No action responded to '$action'.");
   }
 
@@ -658,9 +658,9 @@ class Trails_Controller {
     # get uri; keep absolute URIs
     $url = preg_match('#^(/|\w+://)#', $to)
            ? $to
-           : $this->url_for($to);
+           : $this->urlFor($to);
 
-    $this->response->add_header('Location', $url)->set_status(302);
+    $this->response->addHeader('Location', $url)->setStatus(302);
   }
 
 
@@ -671,7 +671,7 @@ class Trails_Controller {
    *
    * @return void
    */
-  function render_text($text = ' ') {
+  function renderText($text = ' ') {
 
     if ($this->performed) {
       throw new Trails_DoubleRenderError();
@@ -679,7 +679,7 @@ class Trails_Controller {
 
     $this->performed = TRUE;
 
-    $this->response->set_body($text);
+    $this->response->setBody($text);
   }
 
 
@@ -688,8 +688,8 @@ class Trails_Controller {
    *
    * @return void
    */
-  function render_nothing() {
-    $this->render_text('');
+  function renderNothing() {
+    $this->renderText('');
   }
 
 
@@ -700,12 +700,12 @@ class Trails_Controller {
    *
    * @return void
    */
-  function render_action($action) {
+  function renderAction($action) {
     $class = get_class($this);
     $controller_name =
       Trails_Inflector::underscore(substr($class, 0, -10));
 
-    $this->render_template($controller_name.'/'.$action, $this->layout);
+    $this->renderTemplate($controller_name.'/'.$action, $this->layout);
   }
 
 
@@ -717,7 +717,7 @@ class Trails_Controller {
    *
    * @return void
    */
-  function render_template($template_name, $layout = NULL) {
+  function renderTemplate($template_name, $layout = NULL) {
 
     # open template
     $factory = new Flexi_TemplateFactory($this->dispatcher->trails_root .
@@ -728,17 +728,17 @@ class Trails_Controller {
     # template requires setup ?
     switch (get_class($template)) {
       case 'Flexi_JsTemplate':
-        $this->set_content_type('text/javascript');
+        $this->setContentType('text/javascript');
         break;
     }
 
-    $template->set_attributes($this->get_assigned_variables());
+    $template->set_attributes($this->getAssignedVariables());
 
     if (isset($layout)) {
       $template->set_layout($layout);
     }
 
-    $this->render_text($template->render());
+    $this->renderText($template->render());
   }
 
 
@@ -749,7 +749,7 @@ class Trails_Controller {
    *
    * @return array  an associative array of variables for the template
    */
-  function get_assigned_variables() {
+  function getAssignedVariables() {
 
     $assigns = array();
     $protected = get_class_vars(get_class($this));
@@ -773,7 +773,7 @@ class Trails_Controller {
    *
    * @return void
    */
-  function set_layout($layout) {
+  function setLayout($layout) {
     $this->layout = $layout;
   }
 
@@ -787,7 +787,7 @@ class Trails_Controller {
    * If you want the URL to your 'wiki' controller with action 'show' and
    * parameter 'page' you should send:
    *
-   *   $url = $controller->url_for('wiki/show', 'page');
+   *   $url = $controller->urlFor('wiki/show', 'page');
    *
    * $url should then contain 'http://example.com/dispatch.php/wiki/show/page'.
    *
@@ -802,10 +802,10 @@ class Trails_Controller {
    * additional parameter which will be urlencoded and concatenated with
    * slashes:
    *
-   *     $controller->url_for('wiki/show', 'page');
+   *     $controller->urlFor('wiki/show', 'page');
    *     -> 'wiki/show/page'
    *
-   *     $controller->url_for('wiki/show', 'page', 'one and a half');
+   *     $controller->urlFor('wiki/show', 'page', 'one and a half');
    *     -> 'wiki/show/page/one+and+a+half'
    *
    * @param  string   a string containing a controller and optionally an action
@@ -813,7 +813,7 @@ class Trails_Controller {
    *
    * @return string  a URL to this route
    */
-  function url_for($to/*, ...*/) {
+  function urlFor($to/*, ...*/) {
 
     # urlencode all but the first argument
     $args = func_get_args();
@@ -831,8 +831,8 @@ class Trails_Controller {
    *
    * @return type       <description>
    */
-  function set_status($status, $reason_phrase = NULL) {
-    $this->response->set_status($status, $reason_phrase);
+  function setStatus($status, $reason_phrase = NULL) {
+    $this->response->setStatus($status, $reason_phrase);
   }
 
 
@@ -843,8 +843,8 @@ class Trails_Controller {
    *
    * @return void
    */
-  function set_content_type($type) {
-    $this->response->add_header('Content-Type', $type);
+  function setContentType($type) {
+    $this->response->addHeader('Content-Type', $type);
   }
 
 
@@ -857,7 +857,7 @@ class Trails_Controller {
    * @return object     a response object
    */
   function rescue($exception) {
-    return $this->dispatcher->trails_error($exception);
+    return $this->dispatcher->trailsError($exception);
   }
 }
 
@@ -1078,7 +1078,7 @@ class Trails_Flash implements ArrayAccess {
    *
    * @return void
    */
-  function set_ref($k, &$v) {
+  function setRef($k, &$v) {
     $this->keep($k);
     $this->flash[$k] =& $v;
   }
@@ -1183,7 +1183,7 @@ class Trails_Exception extends Exception {
    */
   function __construct($status = 500, $reason = NULL, $headers = array()) {
     if ($reason === NULL) {
-      $reason = Trails_Response::get_reason($status);
+      $reason = Trails_Response::getReason($status);
     }
     parent::__construct($reason, $status);
     $this->headers = $headers;

@@ -30,7 +30,7 @@ class Trails_Exception extends Exception {
    */
   function __construct($status = 500, $reason = NULL, $headers = array()) {
     if ($reason === NULL) {
-      $reason = Trails_Response::get_reason($status);
+      $reason = Trails_Response::getReason($status);
     }
     parent::__construct($reason, $status);
     $this->headers = $headers;

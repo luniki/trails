@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 class FooController extends Trails_Controller {
-  function index_action() {
+  function indexAction() {
   }
 }
 
@@ -57,8 +57,8 @@ class ControllerRenderTestCase extends UnitTestCase {
 
   function test_should_render_index_action_when_there_is_no_other() {
     $controller = new FilteringController();
-    $controller->expectOnce('before_filter', array('index', array()));
-    $controller->setReturnValue('before_filter', FALSE);
+    $controller->expectOnce('beforeFilter', array('index', array()));
+    $controller->setReturnValue('beforeFilter', FALSE);
     $response = $controller->perform('');
   }
 
@@ -73,7 +73,7 @@ class ControllerRenderTestCase extends UnitTestCase {
     $dispatcher = new Trails_Dispatcher('var://app', 'trails_uri', 'default');
     $controller = new Trails_Controller($dispatcher);
     $controller->redirect('where');
-    $this->assertEqual($controller->get_response(),
+    $this->assertEqual($controller->getResponse(),
                        new Trails_Response('',
                                            array('Location' => 'trails_uri/where'),
                                            302));
@@ -83,7 +83,7 @@ class ControllerRenderTestCase extends UnitTestCase {
     $dispatcher = new Trails_Dispatcher('var://app', 'trails_uri', 'default');
     $controller = new Trails_Controller($dispatcher);
     $controller->redirect('/where');
-    $this->assertEqual($controller->get_response(),
+    $this->assertEqual($controller->getResponse(),
                        new Trails_Response('',
                                            array('Location' => '/where'),
                                            302));
@@ -93,7 +93,7 @@ class ControllerRenderTestCase extends UnitTestCase {
     $dispatcher = new Trails_Dispatcher('var://app', 'trails_uri', 'default');
     $controller = new Trails_Controller($dispatcher);
     $controller->redirect('http://example.com');
-    $this->assertEqual($controller->get_response(),
+    $this->assertEqual($controller->getResponse(),
                        new Trails_Response('',
                                            array('Location' => 'http://example.com'),
                                            302));
@@ -102,45 +102,45 @@ class ControllerRenderTestCase extends UnitTestCase {
   function test_should_throw_exception_if_rendering_more_than_once() {
     $controller = new Trails_Controller(NULL);
     $this->expectException('Trails_DoubleRenderError');
-    $controller->render_nothing();
-    $controller->render_nothing();
+    $controller->renderNothing();
+    $controller->renderNothing();
   }
 
   function test_should_throw_exception_if_rendering_and_redirecting() {
     $controller = new Trails_Controller(NULL);
     $this->expectException('Trails_DoubleRenderError');
-    $controller->render_nothing();
+    $controller->renderNothing();
     $controller->redirect('');
   }
 
   function test_should_render_template_undecorated_with_implicit_layout() {
     $dispatcher = new Trails_Dispatcher('var://app', 'trails_uri', 'default');
     $controller = new Trails_Controller($dispatcher);
-    $controller->set_layout('layout');
-    $controller->render_template('foo/index');
-    $this->assertEqual($controller->get_response(), new Trails_Response('foo/index'));
+    $controller->setLayout('layout');
+    $controller->renderTemplate('foo/index');
+    $this->assertEqual($controller->getResponse(), new Trails_Response('foo/index'));
   }
 
   function test_should_render_template_decorated_with_explicit_layout() {
     $dispatcher = new Trails_Dispatcher('var://app', 'trails_uri', 'default');
     $controller = new Trails_Controller($dispatcher);
-    $controller->render_template('foo/index', 'layout');
-    $this->assertEqual($controller->get_response(), new Trails_Response('[foo/index]'));
+    $controller->renderTemplate('foo/index', 'layout');
+    $this->assertEqual($controller->getResponse(), new Trails_Response('[foo/index]'));
   }
 
   function test_should_render_action() {
     $dispatcher = new Trails_Dispatcher('var://app', 'trails_uri', 'default');
     $controller = new FooController($dispatcher);
-    $controller->render_action('index');
-    $this->assertEqual($controller->get_response(), new Trails_Response('foo/index'));
+    $controller->renderAction('index');
+    $this->assertEqual($controller->getResponse(), new Trails_Response('foo/index'));
   }
 
   function test_should_render_action_with_layout() {
     $dispatcher = new Trails_Dispatcher('var://app', 'trails_uri', 'default');
     $controller = new FooController($dispatcher);
-    $controller->set_layout('layout');
-    $controller->render_action('index');
-    $this->assertEqual($controller->get_response(), new Trails_Response('[foo/index]'));
+    $controller->setLayout('layout');
+    $controller->renderAction('index');
+    $this->assertEqual($controller->getResponse(), new Trails_Response('[foo/index]'));
   }
 }
 

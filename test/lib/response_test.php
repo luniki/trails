@@ -53,11 +53,11 @@ class ResponseTestCase extends UnitTestCase {
     $response = $this->create_response(
         '<html/>', array('Content-Type' => 'application/xml'), 201);
 
-    $response->expectAt(0, 'send_header',
+    $response->expectAt(0, 'sendHeader',
                         array('HTTP/1.1 201 Created', TRUE, 201));
-    $response->expectAt(1, 'send_header',
+    $response->expectAt(1, 'sendHeader',
                         array('Content-Type: application/xml'));
-    $response->expectCallCount('send_header', 2);
+    $response->expectCallCount('sendHeader', 2);
 
     ob_start();
     $response->output();
@@ -67,10 +67,10 @@ class ResponseTestCase extends UnitTestCase {
   function test_should_send_added_headers() {
     $response = $this->create_response();
 
-    $response->expectOnce('send_header',
+    $response->expectOnce('sendHeader',
                           array('Content-Type: application/xml'));
 
-    $response->add_header('Content-Type', 'application/xml');
+    $response->addHeader('Content-Type', 'application/xml');
 
     ob_start();
     $response->output();
@@ -81,10 +81,10 @@ class ResponseTestCase extends UnitTestCase {
   function test_should_send_set_status() {
     $response = $this->create_response();
 
-    $response->expectOnce('send_header',
+    $response->expectOnce('sendHeader',
                           array('HTTP/1.1 201 Created', TRUE, 201));
 
-    $response->set_status(201);
+    $response->setStatus(201);
 
     ob_start();
     $response->output();

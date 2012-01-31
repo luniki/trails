@@ -1,7 +1,3 @@
-== 0.7.0 2010-07-20
-
-The coding style is changed switching to CamelCase for methods.
-
 == 0.6.5 2010-04-16
 
 === Bugfixes

@@ -49,13 +49,13 @@ class DispatcherTestCase extends UnitTestCase {
     $controller = new RescueController();
     $controller->__construct($this->dispatcher);
 
-    # Dispatching to FooController#indexAction won't set a response thus
-    # provoking an error. By calling #renderNothing before dispatching we can
+    # Dispatching to FooController#index_action won't set a response thus
+    # provoking an error. By calling #render_nothing before dispatching we can
     # preclude this.
-    $controller->renderNothing();
+    $controller->render_nothing();
 
-    $this->dispatcher->expectOnce('loadController', array('foo'));
-    $this->dispatcher->setReturnValue('loadController', $controller);
+    $this->dispatcher->expectOnce('load_controller', array('foo'));
+    $this->dispatcher->setReturnValue('load_controller', $controller);
     $this->dispatcher->expectOnce('parse');
     $this->dispatcher->setReturnValue('parse', array('foo', ''));
 
@@ -64,16 +64,16 @@ class DispatcherTestCase extends UnitTestCase {
 
   function test_should_display_error_on_framework_exception() {
     $exception = new Trails_Exception(500);
-    $this->dispatcher->throwOn('loadController', $exception);
-    $this->dispatcher->expectOnce('trailsError', array($exception));
-    $this->dispatcher->setReturnValue('trailsError', new Trails_Response());
+    $this->dispatcher->throwOn('load_controller', $exception);
+    $this->dispatcher->expectOnce('trails_error', array($exception));
+    $this->dispatcher->setReturnValue('trails_error', new Trails_Response());
     $result = $this->dispatcher->dispatch("/foo");
   }
 
   function test_should_throw_an_exception_if_default_controller_could_not_be_found() {
     $dispatcher = new PartialMockDispatcher();
-    $dispatcher->expectOnce('trailsError');
-    $dispatcher->setReturnValue('trailsError', new Trails_Response());
+    $dispatcher->expectOnce('trails_error');
+    $dispatcher->setReturnValue('trails_error', new Trails_Response());
     $dispatcher->dispatch("");
   }
 }

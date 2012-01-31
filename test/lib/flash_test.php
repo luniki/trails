@@ -104,14 +104,14 @@ class FlashWithSessionTestCase extends UnitTestCase {
 
   function test_should_return_reference_after_set_ref() {
     $a = new stdClass();
-    $this->flash->setRef('a', $a);
+    $this->flash->set_ref('a', $a);
     $got = $this->flash->get('a');
     $this->assertReference($got, $a);
   }
 
   function test_should_access_reference_after_set_ref() {
     $a = array();
-    $this->flash->setRef('a', $a);
+    $this->flash->set_ref('a', $a);
     $a[] = 42;
     $got = $this->flash->get('a');
     $this->assertEqual($got, array(42));

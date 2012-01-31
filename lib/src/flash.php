@@ -166,7 +166,7 @@ class Trails_Flash implements ArrayAccess {
    *
    * @return void
    */
-  function setRef($k, &$v) {
+  function set_ref($k, &$v) {
     $this->keep($k);
     $this->flash[$k] =& $v;
   }

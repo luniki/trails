@@ -38,23 +38,23 @@ class ControllerTestCase extends UnitTestCase {
     $this->assertIsA($controller, 'Trails_Controller');
   }
 
-  function test_urlFor_contains_the_base_url() {
+  function test_url_for_contains_the_base_url() {
     $controller = new Trails_Controller($this->dispatcher);
-    $this->assertPattern('|^http://base/$|', $controller->urlFor(''));
+    $this->assertPattern('|^http://base/$|', $controller->url_for(''));
   }
 
-  function test_urlFor_urlencodes_not_the_first_argument() {
+  function test_url_for_urlencodes_not_the_first_argument() {
     $controller = new Trails_Controller($this->dispatcher);
     $url = 'wiki/show/one+and+a+half';
     $this->assertEqual('http://base/' . $url,
-                       $controller->urlFor('wiki/show', 'one and a half'));
+                       $controller->url_for('wiki/show', 'one and a half'));
   }
 
-  function test_urlFor_joins_arguments_with_slashes() {
+  function test_url_for_joins_arguments_with_slashes() {
     $controller = new Trails_Controller($this->dispatcher);
     $url = 'wiki/show/group/main';
     $this->assertEqual('http://base/' . $url,
-                       $controller->urlFor('wiki/show', 'group', 'main'));
+                       $controller->url_for('wiki/show', 'group', 'main'));
   }
 
   function test_should_rescue_app_exceptions_in_controller() {
@@ -63,10 +63,10 @@ class ControllerTestCase extends UnitTestCase {
     $controller->__construct($this->dispatcher);
 
     $this->dispatcher->setReturnValue('parse', array('foo', 'index'));
-    $this->dispatcher->setReturnValue('loadController', $controller);
+    $this->dispatcher->setReturnValue('load_controller', $controller);
 
     $exception = new Exception(__LINE__);
-    $controller->throwOn('indexAction', $exception);
+    $controller->throwOn('index_action', $exception);
     $controller->expectOnce('rescue', array($exception));
     $controller->setReturnValue('rescue', new Trails_Response());
 
@@ -81,7 +81,7 @@ class DoesNotUnderstandController extends Trails_Controller {
     $this->test = $test;
   }
 
-  function doesNotUnderstand($action, $args) {
+  function does_not_understand($action, $args) {
     $this->test->call();
     $this->performed = TRUE;
   }
@@ -96,7 +96,7 @@ class DoesNotUnderstandControllerTestCase extends UnitTestCase {
     $this->called = FALSE;
     $controller = new DoesNotUnderstandController($this);
     $controller->perform('gruffelo');
-    $this->assertTrue($this->called, "#doesNotUnderstand was not called");
+    $this->assertTrue($this->called, "#does_not_understand was not called");
   }
 }
 

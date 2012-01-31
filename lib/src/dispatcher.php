@@ -90,7 +90,7 @@ class Trails_Dispatcher {
     ob_start();
     $level = ob_get_level();
 
-    $this->mapUriToResponse($this->cleanRequestUri((string) $uri))->output();
+    $this->map_uri_to_response($this->clean_request_uri((string) $uri))->output();
 
     while (ob_get_level() >= $level) {
       ob_end_flush();
@@ -112,12 +112,12 @@ class Trails_Dispatcher {
    *
    * @return mixed   a response object
    */
-  function mapUriToResponse($uri) {
+  function map_uri_to_response($uri) {
 
     try {
 
       if ('' === $uri) {
-        if (!$this->fileExists($this->default_controller . '.php')) {
+        if (!$this->file_exists($this->default_controller . '.php')) {
           throw new Trails_MissingFile(
             "Default controller '{$this->default_controller}' not found'");
         }
@@ -129,20 +129,20 @@ class Trails_Dispatcher {
         list($controller_path, $unconsumed) = $this->parse($uri);
       }
 
-      $controller = $this->loadController($controller_path);
+      $controller = $this->load_controller($controller_path);
 
       $response = $controller->perform($unconsumed);
 
     } catch (Exception $e) {
 
       $response = isset($controller) ? $controller->rescue($e)
-                                     : $this->trailsError($e);
+                                     : $this->trails_error($e);
     }
 
     return $response;
   }
 
-  function trailsError($exception) {
+  function trails_error($exception) {
     ob_clean();
 
     # show details for local requests
@@ -177,7 +177,7 @@ class Trails_Dispatcher {
    *
    * @return string  the cleaned string
    */
-  function cleanRequestUri($uri) {
+  function clean_request_uri($uri) {
     if (FALSE !== ($pos = strpos($uri, '?'))) {
       $uri = substr($uri, 0, $pos);
     }
@@ -194,7 +194,7 @@ class Trails_Dispatcher {
    * @return type       <description>
    */
   function parse($unconsumed, $controller = NULL) {
-    list($head, $tail) = $this->splitOnFirstSlash($unconsumed);
+    list($head, $tail) = $this->split_on_first_slash($unconsumed);
 
     if (!preg_match('/^\w+$/', $head)) {
       throw new Trails_RoutingError("No route matches '$head'");
@@ -202,22 +202,22 @@ class Trails_Dispatcher {
 
     $controller = (isset($controller) ? $controller . '/' : '') . $head;
 
-    if ($this->fileExists($controller . '.php')) {
+    if ($this->file_exists($controller . '.php')) {
       return array($controller, $tail);
     }
-    else if ($this->fileExists($controller)) {
+    else if ($this->file_exists($controller)) {
       return $this->parse($tail, $controller);
     }
 
     throw new Trails_RoutingError("No route matches '$head'");
   }
 
-  function splitOnFirstSlash($str) {
+  function split_on_first_slash($str) {
     preg_match(":([^/]*)(/+)?(.*):", $str, $matches);
     return array($matches[1], $matches[3]);
   }
 
-  function fileExists($path) {
+  function file_exists($path) {
     return file_exists("{$this->trails_root}/controllers/$path");
   }
 
@@ -230,7 +230,7 @@ class Trails_Dispatcher {
    *
    * @return TrailsController  an instance of that controller
    */
-  function loadController($controller) {
+  function load_controller($controller) {
     require_once "{$this->trails_root}/controllers/{$controller}.php";
     $class = Trails_Inflector::camelize($controller) . 'Controller';
     if (!class_exists($class)) {

@@ -1,3 +1,7 @@
+== 0.6.6 2012-02-02
+* actions of Controllers may end with an extension (e.g. txt, html, js)
+* added Controller#respond_to to ask for requested extension
+
 == 0.6.5 2010-04-16
 
 === Bugfixes
@@ -39,4 +43,3 @@ This release has some minor changes to Trails_Controller#url_for and Trails_Cont
 === Changed features
 * Trails error handler resides now in the Trails_Dispatcher instead of the Trails_Exception superclass
 * Trails_Dispatcher#clean_uri was renamed to Trails_Dispatcher#clean_request_uri
-

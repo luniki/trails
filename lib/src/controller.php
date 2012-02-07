@@ -127,8 +127,22 @@ class Trails_Controller {
       return array('index', array(), NULL);
     }
 
-    $matched = preg_match('/^(?P<path>\w+(?:\/\w+)*)(?:\.(?P<format>\w+))?$/',
-                          $string, $matches);
+    $matched = preg_match('/
+             ^                # at start of string
+             (?P<path>        # match as subpattern "path"
+                 \w+          # one or more "word" characters
+                 (?:          # followed (without matching)
+                     \/\w+    # by more path elements preceded by a slash
+                 )*           # as many as there are
+             )
+             (?:              # and optionally followed by
+              \.              # either a file type extension
+              (?P<format>\w+) # (dot + at least one "word" character)
+              |               # or
+              \/              # by a single slash
+             )?$
+             /x',
+             $string, $matches);
 
     if (!$matched) {
       throw new Trails_Exception(400, "Bad Request");

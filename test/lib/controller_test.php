@@ -73,6 +73,37 @@ class ControllerTestCase extends UnitTestCase {
 
     $this->dispatcher->dispatch('/foo/index');
   }
+
+  function test_should_parse_urls_with_format()
+  {
+    $controller = new Trails_Controller($this->dispatcher);
+
+    $extractions = array(
+
+        'wiki/show/group'
+        => array('wiki', array('show', 'group'), NULL)
+
+        , 'wiki/show/group.html'
+        => array('wiki', array('show', 'group'), 'html')
+
+        , ''
+        => array('index', array(), NULL)
+
+        , 'wiki.json'
+        => array('wiki', array(), 'json')
+
+        , 'wiki'
+        => array('wiki', array(), NULL)
+
+        , 'wiki/'
+        => array('wiki', array(), NULL)
+    );
+
+    foreach ($extractions as $url => $extraction) {
+        $this->assertEqual($extraction,
+                           $controller->extract_action_and_args($url));
+    }
+  }
 }
 
 
@@ -99,4 +130,3 @@ class DoesNotUnderstandControllerTestCase extends UnitTestCase {
     $this->assertTrue($this->called, "#does_not_understand was not called");
   }
 }
-

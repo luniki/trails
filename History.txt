@@ -1,3 +1,6 @@
+== 0.6.7 2012-02-07
+* fix trailing slashes in URLs causing errors in 0.6.6
+
 == 0.6.6 2012-02-02
 * actions of Controllers may end with an extension (e.g. txt, html, js)
 * added Controller#respond_to to ask for requested extension

@@ -1,3 +1,6 @@
+== 0.6.8 2012-02-09
+* re-allow \W in path segments
+
 == 0.6.7 2012-02-07
 * fix trailing slashes in URLs causing errors in 0.6.6
 

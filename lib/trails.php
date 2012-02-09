@@ -24,7 +24,7 @@
 /**
  * The version of the trails library.
  */
-define('TRAILS_VERSION', '0.6.7');
+define('TRAILS_VERSION', '0.6.8');
 
 
 
@@ -583,30 +583,16 @@ class Trails_Controller {
       return array('index', array(), NULL);
     }
 
-    $matched = preg_match('/
-             ^                # at start of string
-             (?P<path>        # match as subpattern "path"
-                 \w+          # one or more "word" characters
-                 (?:          # followed (without matching)
-                     \/\w+    # by more path elements preceded by a slash
-                 )*           # as many as there are
-             )
-             (?:              # and optionally followed by
-              \.              # either a file type extension
-              (?P<format>\w+) # (dot + at least one "word" character)
-              |               # or
-              \/              # by a single slash
-             )?$
-             /x',
-             $string, $matches);
-
-    if (!$matched) {
-      throw new Trails_Exception(400, "Bad Request");
+    // find optional file extension
+    $format = NULL;
+    if (preg_match('/^(.*[^\/.])\.(\w+)$/', $string, $matches)) {
+      list($_, $string, $format) = $matches;
     }
 
-    $args = explode('/', $matches['path']);
+    // TODO this should possibly remove empty tokens
+    $args = explode('/', $string);
     $action = array_shift($args);
-    return array($action, $args, @$matches['format']);
+    return array($action, $args, $format);
   }
 
 

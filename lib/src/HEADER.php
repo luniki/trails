@@ -24,4 +24,4 @@
 /**
  * The version of the trails library.
  */
-define('TRAILS_VERSION', '0.6.7');
+define('TRAILS_VERSION', '0.6.8');

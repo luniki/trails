@@ -95,8 +95,19 @@ class ControllerTestCase extends UnitTestCase {
         , 'wiki'
         => array('wiki', array(), NULL)
 
+        # I do not like that empty parameter at all
         , 'wiki/'
-        => array('wiki', array(), NULL)
+        => array('wiki', array(''), NULL)
+
+        # I do not like that empty parameter at all
+        , 'wiki///'
+        => array('wiki', array('', '', ''), NULL)
+
+        , 'show/id-with-hyphen'
+        => array('show', array('id-with-hyphen'), NULL)
+
+        , 'show/id-with-hyphen.html'
+        => array('show', array('id-with-hyphen'), 'html')
     );
 
     foreach ($extractions as $url => $extraction) {

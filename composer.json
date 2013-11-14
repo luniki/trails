@@ -15,5 +15,10 @@
     },
     "autoload": {
         "files": ["lib/trails.php"]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.7.x-dev"
+        }
     }
 }

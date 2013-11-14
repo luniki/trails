@@ -1,0 +1,19 @@
+{
+    "name": "luniki/trails",
+    "description": "A minimal web framework for PHP in the wake of RoR and Camping",
+    "keywords": ["web", "framework"],
+    "homepage": "http://github.com/luniki/trails",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "email": "luniki@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.1.0"
+    },
+    "autoload": {
+        "files": ["lib/trails.php"]
+    }
+}
